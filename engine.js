@@ -2,16 +2,15 @@ class Options{
     constructor() {
         this.rules = {
             cluster: {},
-            //{"S":"AB", "A":["BB", "a"], "B":["AB", "b"]}
             //Грамматики 3-го типа
             //Что за фигня с построением
 
-            grammar: [
-                {sign: "S", res: "AB"},
-                {sign: "A", res: "BB"}, {sign: "A", res: "a"},
-                {sign: "B", res: "AB"},
-                {sign: "B", res: "b"},
-            ],
+            // grammar: [
+            //     {sign: "S", res: "AB"},
+            //     {sign: "A", res: "BB"}, {sign: "A", res: "a"},
+            //     {sign: "B", res: "AB"},
+            //     {sign: "B", res: "b"},
+            // ],
 
             // grammar: [
             //     {sign: "S", res: "A"},
@@ -28,11 +27,11 @@ class Options{
             // ],
 
 
-            // grammar: [
-            //     {sign: "S", res: "Aa"},
-            //     {sign: "A", res: "B+"}, {sign: "B", res: "Aa"},
-            //     {sign: "B", res: "a"}
-            // ],
+            grammar: [
+                {sign: "S", res: "Aa"},
+                {sign: "A", res: "B+"}, {sign: "B", res: "Aa"},
+                {sign: "B", res: "a"}
+            ],
             //[ 'a', '+a', 'a+a', '+a+a', 'a+a+a' ]
             //[ 'a', 'aa', 'aaa', 'a+aa', 'a+a+a' ]
             // grammar: [
@@ -92,6 +91,7 @@ class Options{
             }
         })
     }
+
     setDeterminate(){
         this.determinate = [];
         this.rules.grammar.forEach(item => {
@@ -569,33 +569,6 @@ function engine(options){
         return cluster[sign].rules[cluster[sign].current].res;
     }
 
-    // function step({str, determinate, rules, includes, result, limit, current}){
-    //     let inclSign = includes(str, determinate);
-    //     if(current.getCurrent() < limit){
-    //         if(inclSign){
-    //             for(let i = 0; i < rules.cluster[inclSign].rules.length; i++){
-    //                 let newStr = str.replace(inclSign, rules.cluster[inclSign].rules[i].res);
-    //                 current.increaseCurrent();
-    //                 //current.getCurrent() < limit){
-    //                 if(i !== 0){
-    //                     step({str: newStr, determinate, rules, includes, result, limit, current: new Counter()});
-    //                 } else {
-    //                     step({str: newStr, determinate, rules, includes, result, limit, current});
-    //                 }
-    //             }
-    //         } else {
-    //             result.push(str);
-    //         }
-    //     }
-    // }
-
-    // step({
-    //     str: str[0], determinate: options.determinate,
-    //     rules: options.rules, includes, result: res,
-    //     limit: 10,
-    //     current: new Counter(),
-    // })
-
     function chooseRule(arr){
         for (let i = 0; i < arr.length; i++) {
             if(!arr[i].done){
@@ -613,52 +586,75 @@ function engine(options){
 
     let currentDepth = new Counter();
     let res = [];
-    let totalDepth = new Counter();
+    let totalOperationsCount = new Counter();
 
-    let totalDepthLimit = 30000000;
-    let currentDepthLimit = 10000;
-    let STACK_LIMIT = 2000;
-
+    let OPERATIONS_LIMIT = 30000000;
+    let TREE_DEPTH_LIMIT = 10000;
+    let STACK_LIMIT = 10000;
+    let RESULT_LIMIT = 2000;
+    let TIME_LIMIT = 1500;
     let isDeathTime = false;
-    let timeStart = Date.now();
 
     let stack = [];
     stack.push([{
         done: false,
         args: {
-            str: str[0], determinate: options.determinate,
-            rules: options.rules, includes, result: res,
-            limit: currentDepthLimit,
+            str: str[0],
             currentDepth,
-            totalDepth,
-            stack,
         }
     }])
 
-    while (stack.length !== 0 && totalDepth.getCurrent() < totalDepthLimit && !isDeathTime && stack.length < STACK_LIMIT){//totalDepth.getCurrent() < totalDepthLimit){
-        if(Date.now() - timeStart >= 1500) isDeathTime = true;
-        let args = chooseRule(stack[stack.length-1]);
-        let pop = args.pop ? stack.pop() : undefined;
-        let data = step2(args.pop ? pop[pop.length - 1].args : args.args)
-        if(data){
-            res.push(data);
-        } else if(data === false){
-            currentDepth.counter = 0;
+    function makeWords({stack, OPERATIONS_LIMIT, STACK_LIMIT, TREE_DEPTH_LIMIT, currentDepth, totalOperationsCount}){
+        let timeStart = Date.now();
+        while (stack.length !== 0 && (totalOperationsCount.getCurrent() < OPERATIONS_LIMIT) &&
+            (!isDeathTime) && (stack.length < STACK_LIMIT) && (res.length < RESULT_LIMIT)
+            ){
+            if(Date.now() - timeStart >= TIME_LIMIT) {
+                isDeathTime = true;
+                console.log("deathTime")
+            }
+            let args = chooseRule(stack[stack.length-1]);
+            let pop = args.pop ? stack.pop() : undefined;
+            let data = step2(args.pop ? {
+                ...pop[pop.length - 1].args, result: res, limit: TREE_DEPTH_LIMIT, includes, stack,
+                totalOperationsCount, rules: options.rules, determinate: options.determinate
+            } : {
+                ...args.args, result: res, limit: TREE_DEPTH_LIMIT, includes, stack, totalOperationsCount,
+                rules: options.rules, determinate: options.determinate
+            })
+            if(data){
+                res.push(data);
+            } else if(data === false){
+                currentDepth.counter = 0;
+            }
         }
     }
 
-    if(stack.length !== 0){
+    makeWords({
+        stack, OPERATIONS_LIMIT, STACK_LIMIT, TREE_DEPTH_LIMIT, currentDepth, totalOperationsCount
+    });
+
+
+    if(stack.length !== 0 && res.length < RESULT_LIMIT){
+        isDeathTime = false;
+        totalOperationsCount.counter = 0;
+        STACK_LIMIT *= 10;
+        makeWords({
+            stack, STACK_LIMIT, OPERATIONS_LIMIT, currentDepth, totalOperationsCount, TREE_DEPTH_LIMIT: 30,
+        });
+
         stack.forEach(arr => {
             arr.forEach(args => {
-                if(!includes(args.args.str, args.args.determinate)){
+                if(!includes(args.args.str, options.determinate)){
                     res.push(args.args.str)
                 }
             })
         })
+
     }
 
 
-    function step2({str, determinate, rules, includes, limit, totalDepth, currentDepth, stack}){
+    function step2({str, determinate, rules, includes, limit, totalOperationsCount, currentDepth, stack}){
         let inclSign = includes(str, determinate);
         let toPush = [];
 
@@ -667,17 +663,17 @@ function engine(options){
                 for(let i = 0; i < rules.cluster[inclSign].rules.length; i++){
                     //console.log(currentDepth.getCurrent(), totalDepth.getCurrent());
                     let newStr = str.replace(inclSign, rules.cluster[inclSign].rules[i].res);
-                    totalDepth.increaseCurrent();
+                    totalOperationsCount.increaseCurrent();
                     currentDepth.increaseCurrent();
                     if(i !== 0){
                         toPush.push({
                             done: false,
-                            args: {str: newStr, determinate, rules, includes, limit, totalDepth, stack, currentDepth: new Counter(currentDepth.getCurrent())}
+                            args: {str: newStr, currentDepth: new Counter(currentDepth.getCurrent())}
                         });
                     } else {
                         toPush.push({
                             done: false,
-                            args: {str: newStr, determinate, rules, includes, limit, totalDepth, stack, currentDepth}
+                            args: {str: newStr, currentDepth}
                         });
                     }
                 }
@@ -690,25 +686,9 @@ function engine(options){
         }
     }
 
-    console.log("stack", stack.map(item => item.map(item2 => item2.args.str)));
+    console.log("stack.length", stack.length);
+    //console.log("stack", stack.map(item => item.map(item2 => item2.args.str)));
 
-
-
-    // let inclSign = includes(str[str.length - 1], options.determinate);
-    // while(counter < limit && inclSign){
-    //     let selectedRule = selectRule(inclSign, options.rules.cluster);
-    //     str.push(str[str.length - 1].replace(inclSign, selectedRule));
-    //     inclSign = includes(str[str.length - 1], options.determinate);
-    //     counter += 1;
-    // }
-
-    //Удаление нетерминальных символов
-    // let re = new RegExp(options.determinate.join("|"), "g")
-    // str = str.map(item => {
-    //     return item.replace(re, "");
-    // })
-    // return str.filter(item => item);
-    //return str;
     return res;
 }
 
@@ -848,10 +828,10 @@ const engineRes = engine(options)
 console.log("engineRes len", engineRes.length);
 console.log("engineRes", engineRes);
 let transformedRules = options.transformer()
-// let normalizedRules =  CHF(options.transformer());
+//let normalizedRules =  CHF(options.transformer());
 //
 console.log("transformer", transformedRules);
-// console.log("normalize transformer", normalizedRules);
+//console.log("normalize transformer", normalizedRules);
 // let mainRes = engineRes.filter((item, index) => index % 1 === 0).map(item => CYK_algorithm(normalizedRules, item));
 // console.log(mainRes);
 // console.log(mainRes.length);
