@@ -4,7 +4,9 @@ export function CHF(obj_rule){
     some_term_sign(obj_rule)
     some_noterm_sign(obj_rule)
     go_myself_del(obj_rule)
-    one_noterm(obj_rule);
+    if(one_noterm(obj_rule));
+    else return 0;
+    console.log(obj_rule);
     return obj_rule;
 }
 
@@ -38,17 +40,18 @@ export function one_noterm(obj_rule){
         for(let key in obj_rule){
             if(obj_rule[key].length === 1 && typeof(obj_rule[key]) === "string" && key !== "S0"){
                 for(let i = 0; i < no_term_arr.length; i++){
-                    if(obj_rule[key] === no_term_arr[i]){
+                    if(obj_rule[key] === no_term_arr[i] && key !== no_term_arr[i] && key !== "S0"){
                         flag = true;
                         obj_rule[key] = go_to_norm_rule(obj_rule, no_term_arr, obj_rule[key]);
                     }
+                    else if(obj_rule[key] === no_term_arr[i] && key === no_term_arr[i]) return 0;
                 }
             }
             else if(typeof(obj_rule[key]) === "object"){
                 for(let j = 0; j < obj_rule[key].length; j++){
                     if(obj_rule[key][j].length === 1){
                         for(let i = 0; i < no_term_arr.length; i++){
-                            if(obj_rule[key][j] === no_term_arr[i] && key !== "S0"){
+                            if(obj_rule[key][j] === no_term_arr[i] && key !== no_term_arr[i] && key !== "S0"){
 
                                 flag = true;
                                 obj_rule[key][j] = go_to_norm_rule(obj_rule, no_term_arr, obj_rule[key][j]);
@@ -71,12 +74,14 @@ export function one_noterm(obj_rule){
                                     }
                                 }
                             }
+                            else if(obj_rule[key][j] === no_term_arr[i] && key === no_term_arr[i]) return 0
                         }
                     }
                 }
             }
         }
     }
+    return 1
 }
 
 export function go_to_norm_rule(obj_rule, no_term_arr, elem){
@@ -103,6 +108,7 @@ export function some_noterm_sign(obj_rule){
     let alf = ["б", "в", "г", "д", "е", "ё", "ж", "з", "и", "к", "л", "м", "н", "о", "п", "р", "с", "т"];
     let string;
     let save_string;
+    let repeat_def;
     let counter = 0;
     let flag = true;
 
@@ -111,19 +117,39 @@ export function some_noterm_sign(obj_rule){
         for(let key in obj_rule){
             if(obj_rule[key].length > 2 && typeof(obj_rule[key]) === "string"){
                 save_string = obj_rule[key].slice(1, obj_rule[key].length)
-                string = obj_rule[key][0] + alf[counter];
-                obj_rule[key] = string;
-                obj_rule[alf[counter]] = save_string;
-                counter += 1;
+                for(let key2 in obj_rule){
+                    if(obj_rule[key2] === save_string) repeat_def = key2
+                }
+                if(repeat_def === undefined){
+                    string = obj_rule[key][0] + alf[counter];
+                    obj_rule[key] = string;
+                    obj_rule[alf[counter]] = save_string;
+                    counter += 1;
+                }
+                else{
+                    string = obj_rule[key][0] + repeat_def;
+                    obj_rule[key] = string;
+                    repeat_def = undefined;
+                }
             }
             else if(typeof(obj_rule[key]) === "object"){
                 for(let i = 0; i < obj_rule[key].length; i++){
                     if(obj_rule[key][i].length > 2){
-                        save_string = obj_rule[key][i].slice(1, obj_rule[key][i].length)
-                        string = obj_rule[key][i][0] + alf[counter];
-                        obj_rule[key][i] = string;
-                        obj_rule[alf[counter]] = save_string;
-                        counter += 1;
+                        save_string = obj_rule[key][i].slice(1, obj_rule[key][i].length);
+                        for(let key2 in obj_rule){
+                            if(obj_rule[key2] === save_string) repeat_def = key2
+                        }
+                        if(repeat_def === undefined){
+                            string = obj_rule[key][i][0] + alf[counter];
+                            obj_rule[key][i] = string;
+                            obj_rule[alf[counter]] = save_string;
+                            counter += 1;
+                        }
+                        else{
+                            string = obj_rule[key][i][0] + repeat_def;
+                            obj_rule[key][i] = string;
+                            repeat_def = undefined;
+                        }
                     }
                 }
             }
@@ -138,7 +164,7 @@ export function some_term_sign(obj_rule){
     let save_term;
     let string;
     let index = 0;
-    let arr_Nterm = [];
+    let repeat_def;
     let check_term = true;
     for(let key in obj_rule){
         if(typeof(obj_rule[key]) === "string" && obj_rule[key].length > 1){
@@ -150,10 +176,20 @@ export function some_term_sign(obj_rule){
                 }
                 if(check_term === true){
                     save_term = obj_rule[key][i];
-                    string = obj_rule[key].slice(0, i) + `${alf[index]}` + obj_rule[key].slice(i + 1, obj_rule[key].length);
-                    obj_rule[key] = string;
-                    obj_rule[alf[index]] = save_term;
-                    index += 1;
+                    for(let key2 in obj_rule){
+                        if(obj_rule[key2] === save_term) repeat_def = key2;
+                    }
+                    if(repeat_def === undefined){
+                        string = obj_rule[key].slice(0, i) + `${alf[index]}` + obj_rule[key].slice(i + 1, obj_rule[key].length);
+                        obj_rule[key] = string;
+                        obj_rule[alf[index]] = save_term;
+                        index += 1;
+                    }
+                    else{
+                        string = obj_rule[key].slice(0, i) + `${repeat_def}` + obj_rule[key].slice(i + 1, obj_rule[key].length);
+                        obj_rule[key] = string;
+                        repeat_def = undefined
+                    }
                 }
                 check_term = true;
             }
@@ -169,10 +205,20 @@ export function some_term_sign(obj_rule){
                         }
                         if(check_term === true){
                             save_term = obj_rule[key][i][j];
-                            string = obj_rule[key][i].slice(0, j) + `${alf[index]}` + obj_rule[key][i].slice(j + 1, obj_rule[key][i].length);
-                            obj_rule[key][i] = string;
-                            obj_rule[alf[index]] = save_term;
-                            index += 1;
+                            for(let key2 in obj_rule){
+                                if(obj_rule[key2] === save_term) repeat_def = key2;
+                            }
+                            if(repeat_def === undefined){
+                                string = obj_rule[key][i].slice(0, j) + `${alf[index]}` + obj_rule[key][i].slice(j + 1, obj_rule[key][i].length);
+                                obj_rule[key][i] = string;
+                                obj_rule[alf[index]] = save_term;
+                                index += 1;
+                            }
+                            else{
+                                string = obj_rule[key][i].slice(0, j) + `${repeat_def}` + obj_rule[key][i].slice(j + 1, obj_rule[key][i].length);
+                                obj_rule[key][i] = string;
+                                repeat_def = undefined
+                            }
                         }
                         check_term = true;
                     }
@@ -261,7 +307,7 @@ export function del_epsilon(obj_rule){
                                 if(obj_rule[key][i] === del_el[k]) flag_4 = true;
                             }
                             if(flag_4 === false) j = del_el.length;
-                        }
+                        } 
                     }
                     if(flag_3 && flag_4){
                         for(let k = 0; k < del_el.length; k++){
@@ -319,10 +365,9 @@ export function del_epsilon(obj_rule){
             for(let i = 0; i < obj_rule[key].length; i++){
                 if(obj_rule[key][i] === ""){
                     del_el.push(key)
-                    //string = obj_rule[key].slice(0, i) + obj_rule[key].slice(i + 1, obj_rule[key].length)
                     obj_rule[key].splice(i, i)
-                    //obj_rule[key] = string
-                }
+                    if(key === "S") obj_rule["S0"] = ["S", ""];
+                } 
             }
         }
     }
@@ -349,7 +394,7 @@ export function del_epsilon(obj_rule){
                         if(key === "S") obj_rule["S0"] = ["S", ""];
                     }
                     string = undefined
-                }
+                } 
                 check = 0;
             }
             else if(typeof(obj_rule[key]) === "object"){
@@ -366,6 +411,7 @@ export function del_epsilon(obj_rule){
                         if(string === undefined){
                             flag_2 = true;
                             del_el.push(key);
+                            if(key === "S") obj_rule["S0"] = ["S", ""];
                         }
                         string = undefined
                     }
@@ -388,8 +434,8 @@ export function del_epsilon(obj_rule){
                     }
                 }
             }
-
-            if(typeof(obj_rule[key]) === "object" && key !== "S0"){
+                    
+        if(typeof(obj_rule[key]) === "object" && key !== "S0"){
                 for(let i = 0; i < obj_rule[key].length; i++){
                     if(obj_rule[key][i].length > 1){
                         for(let j = 0; j < obj_rule[key][i].length; j++){
@@ -442,106 +488,121 @@ export function CYK_algorithm(arr_rule, word){
     let save_i = 0;
     let save_j = 0;
     let res_string = 0;
-    for(let i = 0; word.length > i; i++){ //строчки
-        for(let j = 0; word.length  > j; j++){ //столбцы
-            if(i === 0){
-                for(let k = 0; word.length > k; k++){
-                    for(let key in arr_rule){
-                        if(arr_rule[key].length < 2 && word[k] === arr_rule[key]) Intermediate_arr.push(key);
-                        else if(arr_rule[key].length > 1) {
-                            for(let z = 0; z < arr_rule[key].length; z++){
-                                if(word[k] === arr_rule[key][z]) Intermediate_arr.push(key);
-                            }
-                        }
-                    }
-                    CYK_arr_col[k] = Intermediate_arr.slice(0);
-                    Intermediate_arr.length = 0;
-                }
-                CYK_arr_row[i] = CYK_arr_col.slice(0);
-            }
-
-            else{
-                save_i = i;
-                save_j = 1;
-                while(save_i >= 1){
-                    if(CYK_arr_row[i-save_i] !== undefined && CYK_arr_row[i-save_i][j] !== undefined && CYK_arr_row[i-save_i][j].length !== 0 && CYK_arr_row[i - (i-save_i + 1)] !== undefined && CYK_arr_row[i - (i-save_i + 1)][j + (i-save_i + 1)] !== undefined){
-                        if(typeof(CYK_arr_row[i - (i-save_i + 1)][j + save_j]) === "string"){
-                            if(typeof(CYK_arr_row[i-save_i][j]) === "string"){
-                                res_string = CYK_arr_row[i-save_i][j] + CYK_arr_row[i - (i-save_i + 1)][j + save_j];
-
-                                Intermediate_arr = rule_check(arr_rule, res_string, Intermediate_arr);
-                                CYK_arr_col[j] = Intermediate_arr.slice(0);
-
-                            }
-                            else{
-                                for(let k = 0; k < CYK_arr_row[i-save_i][j].length; k++){
-                                    res_string = CYK_arr_row[i-save_i][j][k] + CYK_arr_row[i - (i-save_i + 1)][j + save_j];
-
-                                    Intermediate_arr = rule_check(arr_rule, res_string, Intermediate_arr);
-                                    CYK_arr_col[j] = Intermediate_arr.slice(0);
-
-                                }
-                            }
-
-                            save_i -= 1
-                            save_j +=1
-                        }
-                        else{
-                            for(let k = 0; k < CYK_arr_row[i - (i-save_i + 1)][j + save_j].length; k++){
-                                if(typeof(CYK_arr_row[i-save_i][j]) === "string"){
-                                    res_string = CYK_arr_row[i-save_i][j] + CYK_arr_row[i - (i-save_i + 1)][j + save_j][k]
-
-                                    // console.log(i)
-                                    // console.log(CYK_arr_row[i-save_i][j])
-                                    // console.log(CYK_arr_row[i - (i-save_i + 1)][j + save_j])
-                                    // console.log("***********************************************")
-                                    Intermediate_arr = rule_check(arr_rule, res_string, Intermediate_arr);
-                                    CYK_arr_col[j] = Intermediate_arr.slice(0);
-
-                                }
-                                else{
-                                    for(let z = 0; z < CYK_arr_row[i-save_i][j].length; z++){
-                                        res_string = CYK_arr_row[i-save_i][j][z] + CYK_arr_row[i - (i-save_i + 1)][j + save_j][k]
-
-                                        Intermediate_arr = rule_check(arr_rule, res_string, Intermediate_arr);
-                                        CYK_arr_col[j] = Intermediate_arr.slice(0);
-
-                                    }
-                                }
-                            }
-                            save_i -= 1
-                            save_j +=1
-                        }
-                    }
-                    else {
-                        save_i -= 1;
-                        save_j +=1
-                    }
-                }
-                Intermediate_arr.length = 0;
-                CYK_arr_row[i] = CYK_arr_col.slice(0);
-            }
-        }
-        length = CYK_arr_col.length - 1;
-        if(length >= 0) CYK_arr_col.length = length;
+    if(arr_rule === 0){
+        console.log("Ошибка! грамматика не поддается проверке");
+        return -1;
     }
-    //console.log(CYK_arr_row)
-    if(typeof(CYK_arr_row[CYK_arr_row.length - 1][0]) === "string"){
-        if(CYK_arr_row[CYK_arr_row.length - 1][0] === "S0"){
-            //console.log("Данное слово задано верно")
-            return 1;
-        }
-        //else console.log("Такое слово не может быть задано в данной грамматике")
+    if(word.length === 0 && arr_rule["S0"].length === 2){
+        //console.log("Данное слово задано верно");
+        return 1;
+    }
+    else if(word.length === 0 && arr_rule["S0"].length === 1){
+        //console.log("Такое слово не может быть задано в данной грамматике");
         return 0;
     }
-    for(let i = 0; CYK_arr_row[CYK_arr_row.length - 1][0].length > i; i++){
-        if(CYK_arr_row[CYK_arr_row.length - 1][0][i] ==="S0"){
-            //console.log("Данное слово задано верно");
-            return 1;
+    else if(word.length !== 0){
+        for(let i = 0; word.length > i; i++){ //строчки
+            for(let j = 0; word.length  > j; j++){ //столбцы
+                if(i === 0){
+                    for(let k = 0; word.length > k; k++){
+                        for(let key in arr_rule){
+                            if(arr_rule[key].length < 2 && word[k] === arr_rule[key]) Intermediate_arr.push(key);
+                            else if(arr_rule[key].length > 1) {
+                                for(let z = 0; z < arr_rule[key].length; z++){
+                                    if(word[k] === arr_rule[key][z]) Intermediate_arr.push(key);
+                                }
+                            }
+                        }
+                        CYK_arr_col[k] = Intermediate_arr.slice(0);
+                        Intermediate_arr.length = 0;
+                    }
+                    CYK_arr_row[i] = CYK_arr_col.slice(0);
+                }
+    
+                else{
+                    save_i = i;
+                    save_j = 1;
+                    while(save_i >= 1){
+                        if(CYK_arr_row[i-save_i] !== undefined && CYK_arr_row[i-save_i][j] !== undefined && CYK_arr_row[i-save_i][j].length !== 0 && CYK_arr_row[i - (i-save_i + 1)] !== undefined && CYK_arr_row[i - (i-save_i + 1)][j + (i-save_i + 1)] !== undefined){
+                            if(typeof(CYK_arr_row[i - (i-save_i + 1)][j + save_j]) === "string"){
+                                if(typeof(CYK_arr_row[i-save_i][j]) === "string"){
+                                    res_string = CYK_arr_row[i-save_i][j] + CYK_arr_row[i - (i-save_i + 1)][j + save_j];
+    
+                                    Intermediate_arr = rule_check(arr_rule, res_string, Intermediate_arr);
+                                    CYK_arr_col[j] = Intermediate_arr.slice(0);
+    
+                                }
+                                else{
+                                    for(let k = 0; k < CYK_arr_row[i-save_i][j].length; k++){
+                                        res_string = CYK_arr_row[i-save_i][j][k] + CYK_arr_row[i - (i-save_i + 1)][j + save_j];
+    
+                                        Intermediate_arr = rule_check(arr_rule, res_string, Intermediate_arr);
+                                        CYK_arr_col[j] = Intermediate_arr.slice(0);
+    
+                                    }
+                                }
+    
+                                save_i -= 1
+                                save_j +=1
+                            } 
+                            else{
+                                for(let k = 0; k < CYK_arr_row[i - (i-save_i + 1)][j + save_j].length; k++){
+                                    if(typeof(CYK_arr_row[i-save_i][j]) === "string"){
+                                        res_string = CYK_arr_row[i-save_i][j] + CYK_arr_row[i - (i-save_i + 1)][j + save_j][k]
+    
+                                        // console.log(i)
+                                        // console.log(CYK_arr_row[i-save_i][j])
+                                        // console.log(CYK_arr_row[i - (i-save_i + 1)][j + save_j])
+                                        // console.log("***********************************************")
+                                        Intermediate_arr = rule_check(arr_rule, res_string, Intermediate_arr);
+                                        CYK_arr_col[j] = Intermediate_arr.slice(0);
+    
+                                    }
+                                    else{
+                                        for(let z = 0; z < CYK_arr_row[i-save_i][j].length; z++){
+                                            res_string = CYK_arr_row[i-save_i][j][z] + CYK_arr_row[i - (i-save_i + 1)][j + save_j][k]
+    
+                                            Intermediate_arr = rule_check(arr_rule, res_string, Intermediate_arr);
+                                            CYK_arr_col[j] = Intermediate_arr.slice(0);
+    
+                                        }
+                                    }
+                                }
+                                save_i -= 1
+                                save_j +=1
+                            }
+                        }
+                        else {
+                            save_i -= 1;
+                            save_j +=1
+                        }
+                    } 
+                    Intermediate_arr.length = 0;
+                    CYK_arr_row[i] = CYK_arr_col.slice(0);
+                }
+            }
+            length = CYK_arr_col.length - 1;
+            if(length >= 0) CYK_arr_col.length = length;
         }
+        //console.log(CYK_arr_row)
+        if(typeof(CYK_arr_row[CYK_arr_row.length - 1][0]) === "string"){
+            if(CYK_arr_row[CYK_arr_row.length - 1][0] === "S0" || CYK_arr_row[CYK_arr_row.length - 1][0] === "S"){
+                console.log("Данное слово задано верно")
+                return 1;
+            }
+            else return 0;//console.log("Такое слово не может быть задано в данной грамматике")
+        }
+        else{
+            for(let i = 0; CYK_arr_row[CYK_arr_row.length - 1][0].length > i; i++){
+                if(CYK_arr_row[CYK_arr_row.length - 1][0][i] ==="S0" || CYK_arr_row[CYK_arr_row.length - 1][0][i] ==="S"){
+                    //console.log("Данное слово задано верно");
+                    return 1;
+                } 
+            }
+            //console.log("Такое слово не может быть задано в данной грамматике");
+            return 0;
+        } 
     }
-    //console.log("Такое слово не может быть задано в данной грамматике");
-    return 0;
 }
 
 export function Unambiguous_conversion(obj_rule){ //Функция мутирует объект! Ждет объект с правилами в трансформированной форме
