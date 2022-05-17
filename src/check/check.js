@@ -1,130 +1,4 @@
-class Options{
-    constructor() {
-        this.rules = {
-            cluster: {},
-            //{"S":"AB", "A":["BB", "a"], "B":["AB", "b"]}
-            //Грамматики 3-го типа
-            //Что за фигня с построением
-
-            grammar: [
-                {sign: "S", res: "AB"},
-                {sign: "A", res: "BB"}, {sign: "A", res: "a"},
-                {sign: "B", res: "AB"},
-                {sign: "B", res: "b"},
-            ],
-
-            // grammar: [
-            //     {sign: "S", res: "A"},
-            //     {sign: "A", res: "B"}, {sign: "A", res: "C"}, {sign: "B", res: "E"},
-            //     {sign: "C", res: "b"},
-            //     {sign: "E", res: "A"},
-            //     {sign: "E", res: "abc"},
-            // ],
-
-            // grammar: [
-            //     {sign: "S", res: "A"},
-            //     {sign: "A", res: "A"}, {sign: "A", res: "b"}, {sign: "A", res: "abc"}, {sign: "A", res: "A"},
-            //
-            // ],
-
-
-            // grammar: [
-            //     {sign: "S", res: "Aa"},
-            //     {sign: "A", res: "B+"}, {sign: "B", res: "Aa"},
-            //     {sign: "B", res: "a"}
-            // ],
-            //[ 'a', '+a', 'a+a', '+a+a', 'a+a+a' ]
-            //[ 'a', 'aa', 'aaa', 'a+aa', 'a+a+a' ]
-            // grammar: [
-            //     {sign: "S", res: "AC"},
-            //     {sign: "A", res: "BF"}, {sign: "B", res: "AC"},
-            //     {sign: "B", res: "a"},
-            //     {sign: "C", res: "a"},
-            //     {sign: "F", res: "+"},
-            // ],
-            // grammar: [
-            //     {sign: "S", res: "Aa"},
-            //     {sign: "A", res: "B+"}, {sign: "B", res: "Ca"},
-            //     {sign: "C", res: "a+"}
-            // ],
-            // grammar: [
-            //     {sign: "S", res: "aA"},
-            //     {sign: "A", res: "+aA"}
-            // ],
-            // grammar: [
-            //     {sign: "S", res: "A"},
-            //     {sign: "A", res: "aBc"},
-            //     {sign: "B", res: "deA"},
-            //     {sign: "B", res: ""},
-            // ],
-            // grammar: [
-            //     {sign: "S", res: "aaaA"},
-            //     {sign: "A", res: "abcA"},
-            //     {sign: "A", res: "bbb"},
-            // ],
-
-            //Контекстно свободные грамматики
-
-            // grammar: [
-            //     {sign: "S", res: "aabBBACbbb"},
-            //     {sign: "A", res: "aaa"},
-            // ],
-            // grammar: [
-            //     {sign: "S", res: "aSb"},
-            //     {sign: "S", res: ""},
-            // ],
-            // grammar: [
-            //     {sign: "S", res: "a"},
-            // ],
-            current: 0,
-        }
-    }
-
-    grammarCluster(){
-        this.rules.grammar.forEach(rule => {
-            if(this.rules.cluster.hasOwnProperty(rule.sign)){
-                this.rules.cluster[rule.sign].rules.push(rule);
-            } else {
-                this.rules.cluster[rule.sign] = {
-                    rules: [rule],
-                    current: -1,
-                }
-            }
-        })
-    }
-    setDeterminate(){
-        this.determinate = [];
-        this.rules.grammar.forEach(item => {
-            let key = item.sign;
-            if(!this.determinate.includes(key)){
-                this.determinate.push(key);
-            }
-        })
-    }
-
-    transformer(){
-        const res = {};
-        for(let key in this.rules.cluster){
-            let cur = this.rules.cluster[key].rules.map(item => item.res);
-            res[key] = cur.length === 1 ? cur[0] : cur
-        }
-        return res;
-    }
-
-}
-class Counter{
-    constructor(counter = 0) {
-        this.counter = counter;
-    }
-    getCurrent(){
-        return this.counter
-    }
-    increaseCurrent(){
-        this.counter += 1;
-    }
-}
-
-function CHF(obj_rule){
+export function CHF(obj_rule){
     start_el(obj_rule);
     del_epsilon(obj_rule);
     some_term_sign(obj_rule)
@@ -134,11 +8,11 @@ function CHF(obj_rule){
     return obj_rule;
 }
 
-function start_el(obj_rule){
+export function start_el(obj_rule){
     obj_rule["S0"] = "S";
 }
 
-function go_myself_del(obj_rule){
+export function go_myself_del(obj_rule){
     for(let key in obj_rule){
         if(typeof(obj_rule[key]) === "object"){
             for(let i = 0; i < obj_rule[key].length; i++){
@@ -148,7 +22,7 @@ function go_myself_del(obj_rule){
     }
 }
 
-function one_noterm(obj_rule){
+export function one_noterm(obj_rule){
     let no_term_arr = [];
     let index = 0;
     let flag = true;
@@ -205,7 +79,7 @@ function one_noterm(obj_rule){
     }
 }
 
-function go_to_norm_rule(obj_rule, no_term_arr, elem){
+export function go_to_norm_rule(obj_rule, no_term_arr, elem){
     let save;
     if(obj_rule[elem].length > 1) return obj_rule[elem];
     else{
@@ -225,7 +99,7 @@ function go_to_norm_rule(obj_rule, no_term_arr, elem){
     return save
 }
 
-function some_noterm_sign(obj_rule){
+export function some_noterm_sign(obj_rule){
     let alf = ["б", "в", "г", "д", "е", "ё", "ж", "з", "и", "к", "л", "м", "н", "о", "п", "р", "с", "т"];
     let string;
     let save_string;
@@ -258,7 +132,7 @@ function some_noterm_sign(obj_rule){
     }
 }
 
-function some_term_sign(obj_rule){
+export function some_term_sign(obj_rule){
     let arr_term = [];
     let alf = ["А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", "З", "И", "К", "Л", "М", "Н" , "О", "П", "Р", "С", "Т"];
     let save_term;
@@ -313,7 +187,7 @@ function some_term_sign(obj_rule){
     }
 }
 
-function del_epsilon(obj_rule){
+export function del_epsilon(obj_rule){
     let del_el = [];
     let el = [];
     let flag = true;
@@ -547,172 +421,7 @@ function del_epsilon(obj_rule){
     }
 }
 
-//CHF({"S":["AB", "AX", "BX"], "X":"ZY", "Y":"BB", "Z":["AB", "AX"], "A":"a","B":"b"});
-//CHF({"S":"AB", "A":["SA", "BB", "bB"], "B":["b", "aA", ""]});
-
-function engine(options){
-    let str = [selectRule("S", options.rules.cluster)]
-    function includes(str, determinate){
-        let found;
-        for (let i = 0; i < determinate.length; i++) {
-            let indexOf = str.indexOf(determinate[i]);
-            if(indexOf !== -1){
-                found = determinate[i];
-                break;
-            }
-        }
-        return found;
-    }
-
-    function selectRule(sign, cluster){
-        cluster[sign].current = (cluster[sign].current + 1) % cluster[sign].rules.length;
-        return cluster[sign].rules[cluster[sign].current].res;
-    }
-
-    // function step({str, determinate, rules, includes, result, limit, current}){
-    //     let inclSign = includes(str, determinate);
-    //     if(current.getCurrent() < limit){
-    //         if(inclSign){
-    //             for(let i = 0; i < rules.cluster[inclSign].rules.length; i++){
-    //                 let newStr = str.replace(inclSign, rules.cluster[inclSign].rules[i].res);
-    //                 current.increaseCurrent();
-    //                 //current.getCurrent() < limit){
-    //                 if(i !== 0){
-    //                     step({str: newStr, determinate, rules, includes, result, limit, current: new Counter()});
-    //                 } else {
-    //                     step({str: newStr, determinate, rules, includes, result, limit, current});
-    //                 }
-    //             }
-    //         } else {
-    //             result.push(str);
-    //         }
-    //     }
-    // }
-
-    // step({
-    //     str: str[0], determinate: options.determinate,
-    //     rules: options.rules, includes, result: res,
-    //     limit: 10,
-    //     current: new Counter(),
-    // })
-
-    function chooseRule(arr){
-        for (let i = 0; i < arr.length; i++) {
-            if(!arr[i].done){
-                arr[i].done = true;
-                return arr.length - 1 === i ? {
-                    args: arr[i].args,
-                    pop: true
-                } : {
-                    args: arr[i].args,
-                    pop: false
-                }
-            }
-        }
-    }
-
-    let currentDepth = new Counter();
-    let res = [];
-    let totalDepth = new Counter();
-
-    let totalDepthLimit = 30000000;
-    let currentDepthLimit = 10000;
-    let STACK_LIMIT = 2000;
-
-    let isDeathTime = false;
-    let timeStart = Date.now();
-
-    let stack = [];
-    stack.push([{
-        done: false,
-        args: {
-            str: str[0], determinate: options.determinate,
-            rules: options.rules, includes, result: res,
-            limit: currentDepthLimit,
-            currentDepth,
-            totalDepth,
-            stack,
-        }
-    }])
-
-    while (stack.length !== 0 && totalDepth.getCurrent() < totalDepthLimit && !isDeathTime && stack.length < STACK_LIMIT){//totalDepth.getCurrent() < totalDepthLimit){
-        if(Date.now() - timeStart >= 1500) isDeathTime = true;
-        let args = chooseRule(stack[stack.length-1]);
-        let pop = args.pop ? stack.pop() : undefined;
-        let data = step2(args.pop ? pop[pop.length - 1].args : args.args)
-        if(data){
-            res.push(data);
-        } else if(data === false){
-            currentDepth.counter = 0;
-        }
-    }
-
-    if(stack.length !== 0){
-        stack.forEach(arr => {
-            arr.forEach(args => {
-                if(!includes(args.args.str, args.args.determinate)){
-                    res.push(args.args.str)
-                }
-            })
-        })
-    }
-
-
-    function step2({str, determinate, rules, includes, limit, totalDepth, currentDepth, stack}){
-        let inclSign = includes(str, determinate);
-        let toPush = [];
-
-        if(currentDepth.getCurrent() < limit && !isDeathTime){
-            if(inclSign){
-                for(let i = 0; i < rules.cluster[inclSign].rules.length; i++){
-                    //console.log(currentDepth.getCurrent(), totalDepth.getCurrent());
-                    let newStr = str.replace(inclSign, rules.cluster[inclSign].rules[i].res);
-                    totalDepth.increaseCurrent();
-                    currentDepth.increaseCurrent();
-                    if(i !== 0){
-                        toPush.push({
-                            done: false,
-                            args: {str: newStr, determinate, rules, includes, limit, totalDepth, stack, currentDepth: new Counter(currentDepth.getCurrent())}
-                        });
-                    } else {
-                        toPush.push({
-                            done: false,
-                            args: {str: newStr, determinate, rules, includes, limit, totalDepth, stack, currentDepth}
-                        });
-                    }
-                }
-                stack.push(toPush);
-            } else {
-                return str;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    console.log("stack", stack.map(item => item.map(item2 => item2.args.str)));
-
-
-
-    // let inclSign = includes(str[str.length - 1], options.determinate);
-    // while(counter < limit && inclSign){
-    //     let selectedRule = selectRule(inclSign, options.rules.cluster);
-    //     str.push(str[str.length - 1].replace(inclSign, selectedRule));
-    //     inclSign = includes(str[str.length - 1], options.determinate);
-    //     counter += 1;
-    // }
-
-    //Удаление нетерминальных символов
-    // let re = new RegExp(options.determinate.join("|"), "g")
-    // str = str.map(item => {
-    //     return item.replace(re, "");
-    // })
-    // return str.filter(item => item);
-    //return str;
-    return res;
-}
-
-function rule_check(arr_rule, res_string, Intermediate_arr){
+export function rule_check(arr_rule, res_string, Intermediate_arr){
     for(let key in arr_rule){
         if(typeof(arr_rule[key]) === "string" && res_string === arr_rule[key]){
             Intermediate_arr.push(key);
@@ -726,7 +435,7 @@ function rule_check(arr_rule, res_string, Intermediate_arr){
     return Intermediate_arr;
 }
 
-function CYK_algorithm(arr_rule, word){
+export function CYK_algorithm(arr_rule, word){
     let CYK_arr_col = [];
     let CYK_arr_row = [];
     let Intermediate_arr = [];
@@ -835,23 +544,197 @@ function CYK_algorithm(arr_rule, word){
     return 0;
 }
 
+export function Unambiguous_conversion(obj_rule){ //Функция мутирует объект! Ждет объект с правилами в трансформированной форме
+    let flag = true;
+    let step = 0;
+    let Unambiguous_rule = {}; //Создаем объект с однозначными правилами
+    let intermediate_rule = {} //Создаем объект с промежуточными правилами
+    while(flag){
+        if(step === 0){
+            if(!Search_for_uniqueness(obj_rule, Unambiguous_rule)) flag = false;
+        }
+        else {
+            if(!Search_for_uniqueness(intermediate_rule, Unambiguous_rule)) flag = false;
+        }
+        substitution_unambiguous_rules(Unambiguous_rule, intermediate_rule, obj_rule);
+        step += 1;
+    }
+    //console.log(Unambiguous_rule);
+    return Unambiguous_rule;
+}
 
-//CYK_algorithm({"S":["AB", "AX", "BX"], "X":"ZY", "Y":"BB", "Z":["AB", "AX"], "A":"a","B":"b"}, "aabbb")
-// CYK_algorithm({"S":["AB", "BC"], "A":["BA", "a"], "B":["CC", "b"], "C":["AB", "a"]}, "baaba")
-//CYK_algorithm({"S":"AB", "A":["BB", "a"], "B":["AB", "b"]}, "abba")
-// CYK_algorithm({"S":["AB", "BB"], "A":["CC", "AB", "a"], "B":["BB", "CA", "b"], "C":["BA", "AA", "b"]}, "aabb")
-const options = new Options();
-options.setDeterminate();
-options.grammarCluster();
+function substitution_unambiguous_rules(Unambiguous_rule, intermediate_rule, obj_rule){
+    let flag;
+    let flag_2;
+    let check;
+    let string = "";
+    let index = 0;
 
-const engineRes = engine(options)
-console.log("engineRes len", engineRes.length);
-console.log("engineRes", engineRes);
-let transformedRules = options.transformer()
-// let normalizedRules =  CHF(options.transformer());
-//
-console.log("transformer", transformedRules);
-// console.log("normalize transformer", normalizedRules);
-// let mainRes = engineRes.filter((item, index) => index % 1 === 0).map(item => CYK_algorithm(normalizedRules, item));
-// console.log(mainRes);
-// console.log(mainRes.length);
+    for(let key in obj_rule){
+        if(typeof(obj_rule[key]) === "string"){
+            check = true;
+            for(let i = 0; i < obj_rule[key].length; i++){
+                flag = false;
+                for(let key2 in Unambiguous_rule){
+                    if(obj_rule[key][i] !== key2){
+                        flag_2 = true;
+                        for(let key3 in obj_rule){
+                            if(obj_rule[key][i] === key3) flag_2 = false;
+                        }
+                        if(flag_2) flag = true;
+                    }
+                    else flag = true;
+                }
+                if(!flag && Unambiguous_rule.length > 0) check = false
+            }
+            if(check){
+                index = -1;
+                for(let i = 0; i < obj_rule[key].length; i++){
+                    for(let key2 in Unambiguous_rule){
+                        if(obj_rule[key][i] === key2){
+                            index = key2;
+                        }
+                    }
+                    if(index === -1) string = string + obj_rule[key][i];
+                    else{
+                        if(typeof(Unambiguous_rule[index]) === "object"){
+                            string = string + Unambiguous_rule[index][0];
+                        }
+                        else{
+                            string = string + Unambiguous_rule[index];
+                        }
+                    }
+                    index = -1;
+                }
+                check = true;
+                for(let key3 in intermediate_rule){
+                    //console.log(string, intermediate_rule[key3])
+                    for(let i = 0; i < intermediate_rule[key3].length; i++){
+                        if(string === intermediate_rule[key3][i] && key === key3) check = false;
+                    }
+                }
+                if(check && string !== undefined){
+                    if(!(key in intermediate_rule)) intermediate_rule[key] = [];
+                    intermediate_rule[key].push(string);
+                }
+                string = "";
+            }
+        }
+        else if(typeof(obj_rule[key]) === "object"){
+            for(let z = 0; z < obj_rule[key].length; z++){
+                check = true;
+                for(let i = 0; i < obj_rule[key][z].length; i++){
+                    flag = false;
+                    for(let key2 in Unambiguous_rule){
+                        if(obj_rule[key][z][i] !== key2){
+                            flag_2 = true;
+                            for(let key3 in obj_rule){
+                                if(obj_rule[key][z][i] === key3) flag_2 = false;
+                            }
+                            if(flag_2) flag = true;
+                        }
+                        else flag = true;
+                    }
+                    if(!flag && Unambiguous_rule.length > 0) check = false
+                }
+                if(check){
+                    index = -1;
+                    for(let i = 0; i < obj_rule[key][z].length; i++){
+                        for(let key2 in Unambiguous_rule){
+                            for(let key2 in Unambiguous_rule){
+                                if(obj_rule[key][z][i] === key2){
+                                    index = key2;
+                                }
+                            }
+                        }
+                        if(index === -1) string = string + obj_rule[key][z][i];
+                        else{
+                            if(typeof(Unambiguous_rule[index]) === "object"){
+                                string = string + Unambiguous_rule[index][0];
+                            }
+                            else{
+                                string = string + Unambiguous_rule[index];
+                            }
+                        }
+                        index = -1;
+                    }
+                    check = true;
+                    for(let key3 in intermediate_rule){
+                        //console.log(string, intermediate_rule[key3])
+                        for(let i = 0; i < intermediate_rule[key3].length; i++){
+                            if(string === intermediate_rule[key3][i]  && key === key3) check = false;
+                        }
+                    }
+                    if(check && string !== undefined){
+                        if(!(key in intermediate_rule)) intermediate_rule[key] = [];
+                        intermediate_rule[key].push(string);
+                    }
+                    string = "";
+                }
+            }
+        }
+    }
+}
+
+function Search_for_uniqueness(obj_rule, Unambiguous_rule){ //функция поиска однозначных правил
+    let flag;
+    let new_elem_check = 0;
+    for(let key in obj_rule){ //Пробегаемся по всем правилам
+        if(typeof(obj_rule[key]) === "string"){ //Если правило - строка
+            flag = true;
+            for(let i = 0; i < obj_rule[key].length; i++){ //Проверяем каждый элемент строки на тернарность
+                for(let key2 in obj_rule){
+                    if(obj_rule[key][i] === key2){
+                        flag = false;
+                    }
+                }
+            }
+            if(flag){ //Если все элементы строки тернары
+                for(let key2 in Unambiguous_rule){
+                    for(let i = 0; i < Unambiguous_rule[key2].length; i++){ //Проверяем было ли такое правило ранее
+                        if(obj_rule[key] === Unambiguous_rule[key2][i] && key === key2) flag = false;
+                    }
+                }
+                if(flag){
+                    if(!(key in Unambiguous_rule)) Unambiguous_rule[key] = [];
+                    Unambiguous_rule[key].push(obj_rule[key]); //Если не было, то добавляем новое правило
+                    new_elem_check = 1;
+                }
+            }
+        }
+        else if(typeof(obj_rule[key]) === "object"){ //Если правило объект
+            for(let i = 0; i < obj_rule[key].length; i++){
+                flag = true;
+                for(let j = 0; j < obj_rule[key][i].length; j++){
+                    for(let key2 in obj_rule){
+                        if(obj_rule[key][i][j] === key2){
+                            flag = false;
+                        }
+                    }
+                }
+                if(flag){
+                    for(let key2 in Unambiguous_rule){
+                        for(let j = 0; j < Unambiguous_rule[key2].length; j++){
+                            if(obj_rule[key][i] === Unambiguous_rule[key2][j]  && key === key2) flag = false;
+                        }
+                    }
+                    if(flag){
+                        if(!(key in Unambiguous_rule)) Unambiguous_rule[key] = [];
+                        Unambiguous_rule[key].push(obj_rule[key][i]);
+                        new_elem_check = 1;
+                    }
+                }
+            }
+        }
+    }
+    return new_elem_check;
+}
+
+//Unambiguous_conversion({"S": "aabBBACbbb", "A":"aaa"});
+//Unambiguous_conversion({"S": "aaaA", "A":["bbb", "abcA"]});
+//Unambiguous_conversion({"S": "A", "A":"aBc", "B":["deA", ""]});
+//Unambiguous_conversion({"S": "aAB", "A":["+aA", "+a"], "B":"+c"});
+// grammar: [
+//     {sign: "S", res: "aA"},
+//     {sign: "A", res: "+aA"}
+// ],
