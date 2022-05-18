@@ -20,4 +20,17 @@ import {CHF, CYK_algorithm, Unambiguous_conversion} from "./check/check";
  всех возможных перестановок индексов
  */
 
+/**
+ @param CHF - функция, принимает transformedCluster, препобразовывает в нормальную форму хомского, мутирует объект
+ */
+
+/**
+ @param CYK_algorithm - функция, принимает результат CHF и слово, проверяет слово на принадлежность грамматике
+ */
+
+/**
+ @param Unambiguous_conversion - функция, принимает transformedCluster, преобразовывает правила грамматики по все тернарныеё
+ */
+
+
 export {replaceAllDeterminate, includes, combinationIndexes, Unambiguous_conversion, CHF, CYK_algorithm};

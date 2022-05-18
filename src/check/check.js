@@ -587,7 +587,7 @@ export function CYK_algorithm(arr_rule, word){
         //console.log(CYK_arr_row)
         if(typeof(CYK_arr_row[CYK_arr_row.length - 1][0]) === "string"){
             if(CYK_arr_row[CYK_arr_row.length - 1][0] === "S0" || CYK_arr_row[CYK_arr_row.length - 1][0] === "S"){
-                console.log("Данное слово задано верно")
+                // console.log("Данное слово задано верно")
                 return 1;
             }
             else return 0;//console.log("Такое слово не может быть задано в данной грамматике")

@@ -121,6 +121,16 @@ class Options{
         this.rules.grammar = grammar;
     }
 
+    setNormal(){
+        //NormalizedTransformedCluster
+        this.rules.NTC = CHF(this.transformer());
+    }
+    setUnambiguous(){
+        //UnambiguousTransformedCluster
+        this.rules.UTC = Unambiguous_conversion(this.transformer());
+    }
+
+
 }
 class Counter{
     constructor(counter = 0) {
@@ -133,7 +143,14 @@ class Counter{
         this.counter += 1;
     }
 }
-import {combinationIndexes, replaceAllDeterminate, includes, Unambiguous_conversion} from "./library";
+import {
+    combinationIndexes,
+    replaceAllDeterminate,
+    includes,
+    Unambiguous_conversion,
+    CYK_algorithm,
+    CHF
+} from "./library";
 
 class Engine{
     constructor() {
@@ -141,7 +158,7 @@ class Engine{
         this.Counter = Counter;
         this.settings = {
             STACK_LIMIT: 1000,
-            TREE_DEPTH_LIMIT: 500,
+            TREE_DEPTH_LIMIT: 1000,
             RESULT_LIMIT: 1000,
             DEATH_TIME: 1500,
         }
@@ -159,6 +176,8 @@ class Engine{
         this.options.setDeterminate();
         this.options.grammarCluster();
         this.options.setTransformedCluster();
+        this.options.setNormal();
+        this.options.setUnambiguous();
     }
 
     setSettings(settings){
@@ -168,8 +187,8 @@ class Engine{
     generation(){
         let str = ["S"];
 
-        let res = [];
-        //let res = new Set();
+        //let res = [];
+        let res = new Set();
         let totalDepth = new this.Counter();
 
         let timeStart = Date.now();
@@ -178,15 +197,17 @@ class Engine{
 
         const start = (transformedCluster, TREE_DEPTH_LIMIT, RESULT_LIMIT, STACK_LIMIT, DEATH_TIME) => {
 
-            while (totalDepth.getCurrent() < TREE_DEPTH_LIMIT && res.length < RESULT_LIMIT && (stack[0].length + stack[1].length < STACK_LIMIT)){
+            while (totalDepth.getCurrent() < TREE_DEPTH_LIMIT && res.size < RESULT_LIMIT && (stack[0].length + stack[1].length < STACK_LIMIT)){
                 if(Date.now() - timeStart >= DEATH_TIME) break
                 let curStr = stack[0].shift();
 
                 let {chains, words} = this.system.replaceAllDeterminate(curStr, transformedCluster, this.options.determinate, this.system.includes, STACK_LIMIT - stack[0].length - stack[1].length, RESULT_LIMIT - res.length);
                 if(chains.length === 0 && words.length === 0){ //Если никаких изменений не произошло, значит это готове слово;
-                    res.push(curStr);
+                    //res.push(curStr);
+                    res.add(curStr);
                 }
-                res.push(...words);
+                //res.push(...words);
+                words.forEach(word => res.add(word));
 
                 if(stack[0].length === 0) {
                     if (chains.length === 0 && stack[1].length === 0) {
@@ -202,17 +223,46 @@ class Engine{
             }
         }
 
+
         start(this.options.rules.transformedCluster, this.settings.TREE_DEPTH_LIMIT, this.settings.RESULT_LIMIT, this.settings.STACK_LIMIT, this.settings.DEATH_TIME);
         console.log("totalDepth", totalDepth);
 
         console.log("stack", stack[0].length + stack[1].length);
         if(stack[0].length !== 0 || stack[1].length !== 0){
             let unambiguous = Unambiguous_conversion(this.options.transformer());
+            stack[0] = stack[0].sort((a, b) => a.length > b.length);
+            stack[1] = stack[1].sort((a, b) => a.length > b.length);
             start(unambiguous, this.settings.TREE_DEPTH_LIMIT, this.settings.RESULT_LIMIT, this.settings.STACK_LIMIT * 2, this.settings.DEATH_TIME)
         }
         console.log("stack", stack[0].length + stack[1].length);
-
+        res = Array.from(res);
         return res.sort((a, b) => a.length > b.length);
+    }
+
+    compareTwo(res1, res2){
+        let count = 0;
+        let minLen = res1.length <= res2.length ? res1.length : res2.length;
+        if(res1.length >= res2.length){
+            res2.forEach(item => {
+                if(res1.indexOf(item) !== -1) count += 1
+            })
+        } else {
+            res1.forEach(item => {
+                if(res2.indexOf(item) !== -1) count += 1
+            })
+        }
+
+        return count / minLen * 100;
+    }
+
+    checkWord(word){
+        return !!CYK_algorithm(this.options.rules.NTC, word);
+    }
+
+    speedtest(callback){
+        let start = Date.now();
+        callback();
+        return Date.now() - start;
     }
 }
 
