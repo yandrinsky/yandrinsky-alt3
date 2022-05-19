@@ -6,7 +6,6 @@ export function CHF(obj_rule){
     go_myself_del(obj_rule)
     if(one_noterm(obj_rule));
     else return 0;
-    console.log(obj_rule);
     return obj_rule;
 }
 
@@ -603,6 +602,67 @@ export function CYK_algorithm(arr_rule, word){
             return 0;
         } 
     }
+}
+
+export function CYK_algorithm2(obj_rule, word){
+    let arr = [];
+
+    if(obj_rule === 0) return 0
+
+    if(word === ""){
+        if(obj_rule["S0"].length !== 1) return true;
+        else return false
+    }
+
+    for(let i = 0; i < word.length; i++){
+        for(let key in obj_rule){
+            if(typeof(obj_rule[key]) === "string" && obj_rule[key] === word[i]){
+                //console.log("string",0, i, key)
+                arr[[0, i, key]] = true;
+                //console.log(arr[[0, 0, "B"]])
+            }
+            else if(typeof(obj_rule[key]) === "object"){
+                for(let j = 0; j < obj_rule[key].length; j++){
+                    if(obj_rule[key][j] === word[i]){
+                        //console.log("o",0, i, key)
+                        arr[[0, i, key]] = true;
+                    }
+                }
+            }
+        }
+    }
+
+    for(let i = 1; i < word.length; i++){
+        for(let j = 0; j < word.length - i; j++){
+            for(let k = 0; k < i; k++){
+                for(let key in obj_rule){
+                    if(typeof(obj_rule[key]) === "string" && obj_rule[key].length === 2){
+                        if(arr[[k, j, obj_rule[key][0]]] === true && arr[[i - k - 1, j + k + 1, obj_rule[key][1]]] === true){
+                            arr[[i, j, key]] = true
+                            //console.log(i, j, key)
+                        }
+                    }
+                    else if(typeof(obj_rule[key]) === "object"){
+                        for(let z = 0; z < obj_rule[key].length; z++){
+                            if(obj_rule[key][z].length === 2){
+                                if(arr[[k, j, obj_rule[key][z][0]]] === true && arr[[i - k - 1, j + k + 1, obj_rule[key][z][1]]] === true){
+                                    arr[[i, j, key]] = true
+                                    //console.log(i, j, key)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if(arr[[word.length - 1, 0, "S"]]){
+        //console.log("Такое слово можно построить");
+        return true;
+    }
+    //console.log("Такое слово построить нельзя")
+    return false;
 }
 
 export function Unambiguous_conversion(obj_rule){ //Функция мутирует объект! Ждет объект с правилами в трансформированной форме

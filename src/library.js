@@ -1,7 +1,7 @@
 import {replaceAllDeterminate} from "./construction/construction";
 import {includes} from "./construction/construction";
 import {combinationIndexes} from "./construction/construction";
-import {CHF, CYK_algorithm, Unambiguous_conversion} from "./check/check";
+import {CHF, CYK_algorithm, CYK_algorithm2, Unambiguous_conversion} from "./check/check";
 
 
 
@@ -33,4 +33,4 @@ import {CHF, CYK_algorithm, Unambiguous_conversion} from "./check/check";
  */
 
 
-export {replaceAllDeterminate, includes, combinationIndexes, Unambiguous_conversion, CHF, CYK_algorithm};
+export {replaceAllDeterminate, includes, combinationIndexes, Unambiguous_conversion, CHF, CYK_algorithm, CYK_algorithm2};

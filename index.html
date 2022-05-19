@@ -3,8 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+        }
+        .rules{
+            display: flex;
+            flex-direction: column;
+        }
+        .ruleBlock{
+            display: flex;
+            align-items: center;
+            font-family: Calibri;
+            margin-top: 10px;
+        }
+        .term_input{
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+            padding: 5px;
+            font-size: 20px;
+            text-align: center;
+        }
+        .noterm_input{
+            height: 25px;
+            padding: 5px;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+        .add_ruleBlock{
+            width: 30px;
+            height: 30px;
+            border-radius: 100%;
+            border: 1px solid black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: greenyellow;
+            font-size: 20px;
+            padding: 0px;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-left: 3px;
+        }
+        .compare{
+            margin-top: 30px;
+            padding: 5px;
+            background-color: greenyellow;
+        }
+        .side{
+            width: 100%;
+            margin-left: 10px;
+        }
+        .side:first-of-type{
+            border-right: 1px solid black;
+        }
+        .layout{
+            display: flex;
+        }
+        .del{
+            width: 15px;
+            height: 15px;
+            background-color: orangered;
+            padding: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 100%;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
+
+
+<div id="root">
+    <div class="layout">
+        <div class="side">
+            <div class="rules rules1">
+<!--                <div class="ruleBlock">-->
+<!--                    <input type="text" class="term_input" value="S" disabled>-->
+<!--                    <span>=></span>-->
+<!--                    <input type="text" class="noterm_input">-->
+<!--                </div>-->
+            </div>
+            <div class="add_ruleBlock" data-type="1">+</div>
+            <textarea name="" cols="30" rows="10" class="textarea_1">
+
+            </textarea>
+        </div>
+
+        <div class="side">
+            <div class="rules rules2">
+<!--                <div class="ruleBlock">-->
+<!--                    <input type="text" class="term_input" value="S" disabled>-->
+<!--                    <span>=></span>-->
+<!--                    <input type="text" class="noterm_input">-->
+<!--                </div>-->
+            </div>
+            <div class="add_ruleBlock" data-type="2">+</div>
+            <textarea name="" cols="30" rows="10" class="textarea_2">
+
+            </textarea>
+        </div>
+
+    </div>
+    <button class="compare">compare</button>
+
+
+
+</div>
 </body>
 </html>

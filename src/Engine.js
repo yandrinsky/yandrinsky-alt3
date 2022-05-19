@@ -82,6 +82,7 @@ class Options{
     }
 
     grammarCluster(){
+        this.rules.cluster = {};
         this.rules.grammar.forEach(rule => {
             if(this.rules.cluster.hasOwnProperty(rule.sign)){
                 this.rules.cluster[rule.sign].rules.push(rule);
@@ -149,7 +150,7 @@ import {
     includes,
     Unambiguous_conversion,
     CYK_algorithm,
-    CHF
+    CHF, CYK_algorithm2
 } from "./library";
 
 class Engine{
@@ -207,7 +208,7 @@ class Engine{
                     res.add(curStr);
                 }
                 //res.push(...words);
-                words.forEach(word => res.add(word));
+                words.forEach(word => res.size < RESULT_LIMIT ? res.add(word) : null);
 
                 if(stack[0].length === 0) {
                     if (chains.length === 0 && stack[1].length === 0) {
@@ -215,7 +216,7 @@ class Engine{
                     }
                     stack.shift();
                     totalDepth.increaseCurrent();
-                    stack[0] = [...stack[0], ...chains]
+                    stack[0] = [...stack[0], ...chains].sort((a, b) => a.length > b.length);
                     stack.push([]);
                 }  else {
                     stack[1] = [...stack[1], ...chains]
@@ -255,8 +256,18 @@ class Engine{
         return count / minLen * 100;
     }
 
+    unmatched(target, ideal){
+        let unmatched = [];
+        target.forEach(item => {
+            if(ideal.indexOf(item) === -1){
+                unmatched.push(item);
+            }
+        })
+        return unmatched;
+    }
+
     checkWord(word){
-        return !!CYK_algorithm(this.options.rules.NTC, word);
+        return CYK_algorithm2(this.options.rules.NTC, word);
     }
 
     speedtest(callback){
