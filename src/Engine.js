@@ -1,3 +1,13 @@
+import {
+    combinationIndexes,
+    replaceAllDeterminate,
+    includes,
+    Unambiguous_conversion,
+    CYK_algorithm,
+    CHF, CYK_algorithm2
+} from "./library";
+
+
 class Options{
     constructor() {
         this.rules = {
@@ -82,8 +92,8 @@ class Options{
     }
 
     grammarCluster(){
-        this.rules.cluster = {};
-        this.rules.grammar.forEach(rule => {
+        const add = (rule) => {
+            console.log("rule", rule);
             if(this.rules.cluster.hasOwnProperty(rule.sign)){
                 this.rules.cluster[rule.sign].rules.push(rule);
             } else {
@@ -91,6 +101,36 @@ class Options{
                     rules: [rule],
                     current: -1,
                 }
+            }
+        }
+
+        let reg = /\$ANY\(.-.\)/g;
+        this.rules.cluster = {};
+        this.rules.grammar.forEach(rule => {
+            let match = rule.res.match(reg);
+            let determinates = [];
+            if(match){
+                let TC = {};
+                let alphabet = ["а", "б", "в", "г", "д", "е", "ё", "ж", "з", "и", "й", "к", "л", "м", "н"]
+                let res = rule.res;
+                match.forEach(item => {
+                    let rules = [];
+                    let [start, end] = item.slice(item.indexOf("(") + 1, item.indexOf(")")).split("-");
+                    for (let i = start; i <= end; i++) {
+                        rules.push(String(i));
+                    }
+                    let sign = alphabet.pop()
+                    res = res.replaceAll(item, sign)
+                    determinates.push(sign);
+                    return TC[sign] = rules;
+                })
+                // console.log("res", res);
+                // console.log("TC", TC);
+                // console.log("determinates", determinates);
+                let {chains, words} = replaceAllDeterminate(res, TC, determinates, includes, 1000, 1000);
+                words.forEach(word => add({sign: rule.sign, res: word}));
+            } else {
+                add(rule);
             }
         })
     }
@@ -144,14 +184,6 @@ class Counter{
         this.counter += 1;
     }
 }
-import {
-    combinationIndexes,
-    replaceAllDeterminate,
-    includes,
-    Unambiguous_conversion,
-    CYK_algorithm,
-    CHF, CYK_algorithm2
-} from "./library";
 
 class Engine{
     constructor() {

@@ -1,5 +1,6 @@
 import Engine from "./src/Engine";
 let engine = new Engine();
+let engine2 = new Engine();
 // grammar:
 let a = [
     {sign: "S", res: "AB"},
@@ -98,14 +99,14 @@ const UI = () => {
             <span>=></span>
             <input type="text" class="noterm_input" value="${res ? res : ""}">
             ${
-                sign !== "S" ? "<div class=\"del\">D</div>" : ""
+                 !disabled ? "<div class=\"del\">D</div>" : ""
             }
         </div>`
     }
 
     function recoverRules({grammar1, grammar2}){
-        let rules1 = grammar1.map(rule => formRule(rule.sign, rule.res, rule.sign === "S")).join("");
-        let rules2 = grammar2.map(rule => formRule(rule.sign, rule.res, rule.sign === "S")).join("");
+        let rules1 = grammar1.map((rule, index) => formRule(rule.sign, rule.res, rule.sign === "S" && index === 0)).join("");
+        let rules2 = grammar2.map((rule, index) => formRule(rule.sign, rule.res, rule.sign === "S" && index === 0)).join("");
         if(rules1){
             document.querySelector(".rules.rules1").insertAdjacentHTML("beforeend", rules1);
         }
@@ -159,21 +160,22 @@ const UI = () => {
         let {grammar1, grammar2} = getGrammars();
         saveGrammars({grammar1, grammar2});
         engine.setGrammar(grammar1);
-        console.log("UTC1", engine.options.rules.UTC);
+        engine2.setGrammar(grammar2);
         let result1 = engine.generation();
-        engine.setGrammar(grammar2);
-        console.log("UTC2", engine.options.rules.UTC);
-        let result2 = engine.generation();
-
-        const unmatched = engine.unmatched(result1, result2);
-        let check = unmatched.length ? unmatched.map((item) => engine.checkWord(item)) : [true];
+        let result2 = engine2.generation();
         document.querySelector(".textarea_1").value = result1.map(item => item + "\t").join("");
         document.querySelector(".textarea_2").value = result2.map(item => item + "\t").join("");
-        console.log("result1", result1);
-        console.log("result2", result2);
-        console.log("check", check);
-        //alert(check.filter(item => item === true).length / check.length * 100)
-        alert((check.filter(item => item === true).length + result1.length - check.length) / result1.length * 100)
+        // let unmatched = engine.unmatched(result1, result2);
+        // console.log("unmatched 1", unmatched.length);
+        // let check = unmatched.length ? unmatched.map((item) => engine2.checkWord(item)) : [true];
+        // alert((check.filter(item => item === true).length + result1.length - check.length) / result1.length * 100)
+        //
+        // unmatched = engine2.unmatched(result2, result1);
+        // console.log("unmatched 2", unmatched.length);
+        // check = unmatched.length ? unmatched.map((item) => engine.checkWord(item)) : [true];
+        // alert((check.filter(item => item === true).length + result2.length - check.length) / result2.length * 100)
+        // console.log("result1", result1);
+        // console.log("result2", result2);
     };
     recoverRules(getStoredGrammars());
     setInputSelectors();

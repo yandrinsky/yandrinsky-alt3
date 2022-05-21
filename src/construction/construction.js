@@ -15,14 +15,15 @@ export function replaceAllDeterminate(str, transformedCluster, determinate, incl
         }
     }
 
+
     let chains = [];
     let words = [];
     if(replaces.length){
         const indexes = combinationIndexes(...replaces.map(item => item.length - 1));
         for (let i = 0; i < indexes.length; i++) {
-            let arr = indexes[i];
+            let combination = indexes[i];
             let newStr = str;
-            arr.forEach((item, index) => {
+            combination.forEach((item, index) => {
                 newStr = newStr.replace(replaces[index][0], replaces[index][item + 1]); // + 1 т.к. нулевой индекс - это сама замена
             })
             if(includes(newStr, determinate)){
