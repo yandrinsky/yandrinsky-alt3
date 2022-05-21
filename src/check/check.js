@@ -1,8 +1,9 @@
 export function CHF(obj_rule){
+    let counter = 0;
     start_el(obj_rule);
     del_epsilon(obj_rule);
-    some_term_sign(obj_rule)
-    some_noterm_sign(obj_rule)
+    counter =  some_term_sign(obj_rule)
+    some_noterm_sign(obj_rule, counter)
     go_myself_del(obj_rule)
     if(one_noterm(obj_rule));
     else return 0;
@@ -103,12 +104,12 @@ export function go_to_norm_rule(obj_rule, no_term_arr, elem){
     return save
 }
 
-export function some_noterm_sign(obj_rule){
+export function some_noterm_sign(obj_rule, counter){
     let alf = ["б", "в", "г", "д", "е", "ё", "ж", "з", "и", "к", "л", "м", "н", "о", "п", "р", "с", "т"];
     let string;
     let save_string;
     let repeat_def;
-    let counter = 0;
+    //let counter = 0;
     let flag = true;
 
     while(flag){
@@ -120,9 +121,9 @@ export function some_noterm_sign(obj_rule){
                     if(obj_rule[key2] === save_string) repeat_def = key2
                 }
                 if(repeat_def === undefined){
-                    string = obj_rule[key][0] + alf[counter];
+                    string = obj_rule[key][0] + `${counter}`;
                     obj_rule[key] = string;
-                    obj_rule[alf[counter]] = save_string;
+                    obj_rule[`${counter}`] = save_string;
                     counter += 1;
                 }
                 else{
@@ -139,9 +140,9 @@ export function some_noterm_sign(obj_rule){
                             if(obj_rule[key2] === save_string) repeat_def = key2
                         }
                         if(repeat_def === undefined){
-                            string = obj_rule[key][i][0] + alf[counter];
+                            string = obj_rule[key][i][0] + `${counter}`;
                             obj_rule[key][i] = string;
-                            obj_rule[alf[counter]] = save_string;
+                            obj_rule[`${counter}`] = save_string;
                             counter += 1;
                         }
                         else{
@@ -155,6 +156,7 @@ export function some_noterm_sign(obj_rule){
         }
         if(string === null) flag = false;
     }
+    return counter;
 }
 
 export function some_term_sign(obj_rule){
@@ -179,9 +181,9 @@ export function some_term_sign(obj_rule){
                         if(obj_rule[key2] === save_term) repeat_def = key2;
                     }
                     if(repeat_def === undefined){
-                        string = obj_rule[key].slice(0, i) + `${alf[index]}` + obj_rule[key].slice(i + 1, obj_rule[key].length);
+                        string = obj_rule[key].slice(0, i) + `${index}` + obj_rule[key].slice(i + 1, obj_rule[key].length);
                         obj_rule[key] = string;
-                        obj_rule[alf[index]] = save_term;
+                        obj_rule[`${index}`] = save_term;
                         index += 1;
                     }
                     else{
@@ -208,9 +210,9 @@ export function some_term_sign(obj_rule){
                                 if(obj_rule[key2] === save_term) repeat_def = key2;
                             }
                             if(repeat_def === undefined){
-                                string = obj_rule[key][i].slice(0, j) + `${alf[index]}` + obj_rule[key][i].slice(j + 1, obj_rule[key][i].length);
+                                string = obj_rule[key][i].slice(0, j) + `${index}` + obj_rule[key][i].slice(j + 1, obj_rule[key][i].length);
                                 obj_rule[key][i] = string;
-                                obj_rule[alf[index]] = save_term;
+                                obj_rule[`${index}`] = save_term;
                                 index += 1;
                             }
                             else{
@@ -230,6 +232,7 @@ export function some_term_sign(obj_rule){
 
         }
     }
+    return index;
 }
 
 export function del_epsilon(obj_rule){
