@@ -1,6 +1,35 @@
 import Engine from "./src/Engine";
 let engine = new Engine();
 let engine2 = new Engine();
+
+class Loading{
+    constructor({id}) {
+        this.step = -1;
+        this.steps = [
+            "Генерируем слова 1/2",
+            "Генерируем слова 2/2",
+            "Сопоставляем",
+            "Смотрим принадлежность грамматикам 1/2",
+            "Сопоставляем",
+            "Смотрим принадлежность грамматикам 2/2",
+        ]
+        this.id = id;
+        this.element = document.querySelector("#" + id);
+        this.loadingStep = this.element.querySelector(".layout").querySelector(".loading_step");
+        this.resultField = this.element.querySelector(".layout").querySelector(".result");
+        this.loadingStep.innerHTML = "";
+    }
+
+    next(){
+        this.element.classList.remove("hide");
+        this.step += 1;
+        this.loadingStep.innerHTML = this.steps[this.step];
+    }
+    final({check1, check2}){
+        this.resultField.innerHTML = `${check1} | ${check2}`;
+    }
+}
+
 // grammar:
 let a = [
     {sign: "S", res: "AB"},
@@ -49,18 +78,34 @@ let my = [
     {sign: "L", res: "^K"}, {sign: "L", res: ""},
 ]
 
+const worker = new Worker(new URL('./src/app.worker.js', import.meta.url));
+let loader = new Loading({id: "loading"});
 
-
-
-//CYK 1 len: 18  bbabbbabaabbbabbbb
-//time 1264
-
-// CYK 1 len: 18 bbabbbabbbabbbbbbb time 14000
-//               bbabbbaabababababb time 34
-//               bbabbbbbbbbbbbbbbb time 142934
+worker.onmessage = ({ data: {message, payload}}) => {
+    switch (message){
+        case "NEXT":
+            //loader.next();
+            break
+        case "FINAL":
+            //loader.final(payload);
+            alert(`${payload.check1} | ${payload.check2}`)
+            break
+        case "GEN_1":
+            document.querySelector(".textarea_1").value = payload.map(item => item + "\t").join("");
+            break
+        case "GEN_2":
+            document.querySelector(".textarea_2").value = payload.map(item => item + "\t").join("");
+            break
+    }
+    console.log("worker.onmessage", message);
+};
+worker.onerror = e => {
+    alert("Что-то пошло не так")
+}
 
 
 const UI = () => {
+
     const setInputSelectors = () => {
         document.querySelectorAll(".term_input").forEach(item => {
             item.onkeypress = e => {
@@ -153,18 +198,30 @@ const UI = () => {
     document.querySelector(".compare").onclick = e => {
         engine.setSettings({
             RESULT_LIMIT: 1000,
-            STACK_LIMIT: 10000,
+            STACK_LIMIT: 2000,
             DEATH_TIME: 1500,
             PROCESS_STACK: true,
         });
+        // worker.postMessage({
+        //     question:
+        //         'The Answer to the Ultimate Question of Life, The Universe, and Everything.',
+        // });
+        // loader.next();
         let {grammar1, grammar2} = getGrammars();
-        saveGrammars({grammar1, grammar2});
-        engine.setGrammar(grammar1);
-        engine2.setGrammar(grammar2);
-        let result1 = engine.generation();
-        let result2 = engine2.generation();
-        document.querySelector(".textarea_1").value = result1.map(item => item + "\t").join("");
-        document.querySelector(".textarea_2").value = result2.map(item => item + "\t").join("");
+        worker.postMessage({message: "start", payload: {grammar1, grammar2}});
+        // saveGrammars({grammar1, grammar2});
+        // engine.setGrammar(grammar1);
+        // engine2.setGrammar(grammar2);
+        // console.log("engine.generation", engine.generation);
+
+
+        // let result1 = engine.generation();
+        // let result2 = engine2.generation();
+        // document.querySelector(".textarea_1").value = result1.map(item => item + "\t").join("");
+        // document.querySelector(".textarea_2").value = result2.map(item => item + "\t").join("");
+        //-----------------
+        //console.log("engine2", engine2.options.rules.transformedCluster);
+
         // let unmatched = engine.unmatched(result1, result2);
         // console.log("unmatched 1", unmatched.length);
         // let check = unmatched.length ? unmatched.map((item) => engine2.checkWord(item)) : [true];
@@ -179,7 +236,88 @@ const UI = () => {
     };
     recoverRules(getStoredGrammars());
     setInputSelectors();
+    function getStyles(){
+        return `<style>
+        body{
+            margin: 0;
+            padding: 0;
+        }
+        .rules{
+            display: flex;
+            flex-direction: column;
+        }
+        .ruleBlock{
+            display: flex;
+            align-items: center;
+            font-family: Calibri;
+            margin-top: 10px;
+        }
+        .term_input{
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+            padding: 5px;
+            font-size: 20px;
+            text-align: center;
+        }
+        .noterm_input{
+            height: 25px;
+            padding: 5px;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+        .add_ruleBlock{
+            width: 30px;
+            height: 30px;
+            border-radius: 100%;
+            border: 1px solid black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: greenyellow;
+            font-size: 20px;
+            padding: 0px;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-left: 3px;
+        }
+        .compare{
+            margin-top: 30px;
+            padding: 5px;
+            background-color: greenyellow;
+        }
+        .side{
+            width: 100%;
+            margin-left: 10px;
+        }
+        .side:first-of-type{
+            border-right: 1px solid black;
+        }
+        .layout{
+            display: flex;
+        }
+        .del{
+            width: 15px;
+            height: 15px;
+            background-color: orangered;
+            padding: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 100%;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+    </style>`
+    }
+
+
+    document.head.insertAdjacentHTML("beforeend", getStyles());
 
 }
 
+//ответа выдается процент слов, не принадлежащих заданному языку, и процент слов языка, которые не описывает построенная грамматика
+
 UI();
+
+export {Engine, engine, engine2};

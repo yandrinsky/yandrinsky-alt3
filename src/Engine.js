@@ -93,7 +93,6 @@ class Options{
 
     grammarCluster(){
         const add = (rule) => {
-            console.log("rule", rule);
             if(this.rules.cluster.hasOwnProperty(rule.sign)){
                 this.rules.cluster[rule.sign].rules.push(rule);
             } else {
@@ -259,20 +258,20 @@ class Engine{
 
 
         start(this.options.rules.transformedCluster, this.settings.TREE_DEPTH_LIMIT, this.settings.RESULT_LIMIT, this.settings.STACK_LIMIT, this.settings.DEATH_TIME);
-        console.log("totalDepth", totalDepth.counter);
-
-        console.log("stack", stack[0].length + stack[1].length);
-        console.log("res", res.size);
+        // console.log("totalDepth", totalDepth.counter);
+        //
+        // console.log("stack", stack[0].length + stack[1].length);
+        // console.log("res", res.size);
         if(this.settings.PROCESS_STACK && (stack[0].length !== 0 || stack[1].length !== 0)){
-            console.log("HERE IN PROCESS STACK")
+            //console.log("HERE IN PROCESS STACK")
             totalDepth.counter = 0;
             let unambiguous = Unambiguous_conversion(this.options.transformer());
             stack[0] = stack[0].sort((a, b) => a.length > b.length);
             stack[1] = stack[1].sort((a, b) => a.length > b.length);
             start(unambiguous, this.settings.TREE_DEPTH_LIMIT, this.settings.RESULT_LIMIT, this.settings.STACK_LIMIT * 2, this.settings.DEATH_TIME)
         }
-        console.log("stack", stack[0].length + stack[1].length);
-        console.log("res", res.size);
+        // console.log("stack", stack[0].length + stack[1].length);
+        // console.log("res", res.size);
         res = Array.from(res);
         return res.sort((a, b) => a.length > b.length);
     }
@@ -307,7 +306,7 @@ class Engine{
         return CYK_algorithm2(this.options.rules.NTC, word);
     }
 
-    speedtest(callback){
+    static speedtest(callback){
         let start = Date.now();
         callback();
         return Date.now() - start;

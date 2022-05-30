@@ -11,11 +11,16 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, './dist'),
+        // library: {
+        //     name: 'MyLibrary',
+        //     type: 'var',
+        // },
         filename: 'bundle.js',
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: "./index.html"
+            template: "./index.html",
+            // worker: "./src/app.worker.js"
         }),
         new CleanWebpackPlugin(),
         new NodemonPlugin(),
@@ -30,8 +35,13 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader']
-            }
+            },
+            // {
+            //     test: /\.worker\.js$/,
+            //     use: ['worker-loader']
+            // }
         ]
-    }
+    },
+
 
 }
