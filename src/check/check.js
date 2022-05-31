@@ -853,11 +853,10 @@ export function CYK_algorithm2(obj_rule, word){
     return false;
 }
 
-export function Unambiguous_conversion(obj_rule){ //Функция мутирует объект! Ждет объект с правилами в трансформированной форме
+export function Unambiguous_conversion(obj_rule, max_counter = 2){ //Функция мутирует объект! Ждет объект с правилами в трансформированной форме
     let flag = true;
     let step = 0;
     let counter = 0;
-    let max_counter = 3;
     let Unambiguous_rule = {}; //Создаем объект с однозначными правилами
     let intermediate_rule = {} //Создаем объект с промежуточными правилами
     while(flag){

@@ -6,32 +6,75 @@
     <style>
         .loading{
             width: 700px;
-            height: 80vh;
+            height: 500px;
             border: 1px solid black;
             position: absolute;
-            right: 0;
-            left: 0;
-            margin: auto;
+            left: 50%;
+            top: 50%;
             background: white;
+            transform: translate(-50%, -50%);
             font-family: "Calibri Light";
+        }
 
+        .loading .reset{
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            font-size: 20px;
+            cursor: pointer;
         }
         .loading .layout{
+            position: relative;
             height: 100%;
         }
+
         .loading_step{
             height: 100%;
             width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 40px;
+            flex-direction: column;
+            text-align: center;
+
             font-weight: bold;
+        }
+        .loading_step div{
+            transition: opacity 0.3s ease-in;
+            opacity: 0;
+            font-size: 30px;
+        }
+        .loading_step .done{
+            transition: opacity 0.3s ease-in;
+            opacity: 1;
+            color: black;
+        }
+
+        .result{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease-in;
+            font-size: 40px;
+        }
+
+        .opacityHidden{
+            opacity: 0;
+            transition: opacity 0.3s ease-in;
         }
 
         .hide{
-            display: none;
+            display: none !important;
         }
+
+        .loader{
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 20px;
+        }
+
         .lds-roller {
             display: inline-block;
             position: relative;
@@ -49,7 +92,8 @@
             width: 7px;
             height: 7px;
             border-radius: 50%;
-            background: #cef;
+            background: yellowgreen;
+            /*background: #cef;*/
             margin: -4px 0 0 -4px;
         }
         .lds-roller div:nth-child(1) {
@@ -126,13 +170,22 @@
     <div class="loading hide" id="loading">
 
         <div class="layout">
-            <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+            <div class="loader">
+                <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+            </div>
+
             <div class="loading_step">
+                <div>Смотрим принадлежность грамматикам 2/2</div>
+                <div>Сопоставляем</div>
+                <div>Смотрим принадлежность грамматикам 1/2</div>
+                <div>Сопоставляем</div>
+                <div>Генерируем слова 2/2</div>
+                <div>Генерируем слова 1/2</div>
+            </div>
+            <div class="result opacityHidden">
 
             </div>
-            <div class="result">
-
-            </div>
+            <div class="reset">x</div>
         </div>
     </div>
     <div class="layout">

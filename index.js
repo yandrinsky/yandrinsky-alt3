@@ -15,18 +15,41 @@ class Loading{
         ]
         this.id = id;
         this.element = document.querySelector("#" + id);
+        this.resetBtn = this.element.querySelector(".reset");
+        this.loader = this.element.querySelector(".lds-roller");
         this.loadingStep = this.element.querySelector(".layout").querySelector(".loading_step");
         this.resultField = this.element.querySelector(".layout").querySelector(".result");
-        this.loadingStep.innerHTML = "";
+
+        this.resetBtn.onclick = e =>  this.reset();
     }
 
     next(){
         this.element.classList.remove("hide");
         this.step += 1;
-        this.loadingStep.innerHTML = this.steps[this.step];
+        this.loadingStep.children[5 - this.step].classList.add("done");
+
     }
     final({check1, check2}){
+        this.loader.classList.add("hide");
         this.resultField.innerHTML = `${check1} | ${check2}`;
+        this.loadingStep.classList.add("opacityHidden");
+        setTimeout(() => {
+            this.resultField.classList.remove("opacityHidden")
+        }, 200)
+
+    }
+
+    reset(){
+        this.resultField.innerHTML = "";
+        this.resultField.classList.add("opacityHidden");
+        this.loader.classList.remove("hide");
+        this.step = -1;
+        for (let i = 0; i < this.loadingStep.children.length; i++) {
+            let item = this.loadingStep.children[i];
+            item.classList.remove("done");
+        }
+        this.loadingStep.classList.remove("opacityHidden");
+        this.element.classList.add("hide");
     }
 }
 
@@ -84,11 +107,11 @@ let loader = new Loading({id: "loading"});
 worker.onmessage = ({ data: {message, payload}}) => {
     switch (message){
         case "NEXT":
-            //loader.next();
+            loader.next();
             break
         case "FINAL":
-            //loader.final(payload);
-            alert(`${payload.check1} | ${payload.check2}`)
+            loader.final(payload);
+            // alert(`${payload.check1} | ${payload.check2}`)
             break
         case "GEN_1":
             document.querySelector(".textarea_1").value = payload.map(item => item + "\t").join("");
