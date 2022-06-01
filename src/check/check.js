@@ -1,4 +1,34 @@
+export function correct_grammar_check(obj_rule){ //Принимает в себя правила в виде единого объекта и проверяет правила на корректность ввода. Объект не мутируется
+    let flag = true;
+    for(let key in obj_rule){ //Пробегаем по всем правилам
+        if(typeof(obj_rule[key]) === "string"){ //Есди тип строка, то пробегаем по всем ее символам и проверяем - есть ли хоть один символ, который не равен ключу
+            flag = true;
+            for(let i = 0; i < obj_rule[key].length; i++){
+                if(obj_rule[key][i] === key) flag = false;
+            }
+            if(!flag) return false;
+            
+        }
+        else{
+            flag = false;
+            for(let i = 0; i < obj_rule[key].length; i++){
+                let counter = 0;
+                for(let j = 0; j < obj_rule[key][i].length; j++){
+                    if(obj_rule[key][i][j] !== key){
+                        counter += 1;
+                    } 
+                }
+                if(counter === obj_rule[key][i].length) flag = true;
+            }
+            if(!flag) return false;
+        }
+    } 
+    return true;
+}
+
+
 export function CHF(obj_rule){ //Фунция получает набор правил в виде одного объекта и мутирует его
+    correct_grammar_check(obj_rule);
     if(Object.keys(obj_rule).length === 1 && obj_rule["S"] === "") return obj_rule;
     else{
         let counter = 0; //Счетчик новых символов
