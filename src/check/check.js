@@ -59,12 +59,16 @@ export function correct_grammar_check(obj_rule){ //Принимает в себ�
         while(flag){
             let flag_2 = true
             let save = check_arr.length;
+            // console.log("Входим: ", non_terminal_check_arr[w])
             for(let i = 0; i < non_terminal_check_arr.length; i++){
                 if(typeof(obj_rule[non_terminal_check_arr[i]]) === "string"){
                     for(let j = 0; j < obj_rule[non_terminal_check_arr[i]].length; j++){
                         if(obj_rule[non_terminal_check_arr[i]][j] !== non_terminal_check_arr[w] && !check_arr.includes(obj_rule[non_terminal_check_arr[i]][j])) flag_2 = false;
                     }
-                    if(flag_2 && !check_arr.includes(non_terminal_check_arr[i])) check_arr.push(non_terminal_check_arr[i]);
+                    if(flag_2 && !check_arr.includes(non_terminal_check_arr[i])){
+                        // console.log("Я прошел проверку в блоке проверки СТРОКИ: ", non_terminal_check_arr[i])
+                        check_arr.push(non_terminal_check_arr[i]);
+                    } 
                     flag_2 = true
                 }
                 else{
@@ -73,7 +77,10 @@ export function correct_grammar_check(obj_rule){ //Принимает в себ�
                             if(obj_rule[non_terminal_check_arr[i]][j][z] !== non_terminal_check_arr[w] && !check_arr.includes(obj_rule[non_terminal_check_arr[i]][j][z])) flag_2 = false;
                         }
                     }
-                    if(flag_2 && !check_arr.includes(non_terminal_check_arr[i])) check_arr.push(non_terminal_check_arr[i]);
+                    if(flag_2 && !check_arr.includes(non_terminal_check_arr[i])){
+                        // console.log("Я прошел проверку в блоке проверки Массива: ", non_terminal_check_arr[i])
+                        check_arr.push(non_terminal_check_arr[i]);
+                    } 
                     flag_2 = true;
                 }
             }
@@ -89,14 +96,19 @@ export function correct_grammar_check(obj_rule){ //Принимает в себ�
             let flag_2 = true;
             for(let i = 0; i < obj_rule[non_terminal_check_arr[w]].length; i++){
                 for(let j = 0; j < obj_rule[non_terminal_check_arr[w]][i].length; j++){
+                    // console.log("Буква", non_terminal_check_arr[w], obj_rule[non_terminal_check_arr[w]][i][j])
                     if(check_arr.includes(obj_rule[non_terminal_check_arr[w]][i][j])) flag_2 = false;
                 }
                 if(flag_2) flag = true;
+                flag_2 = true;
             }
-            if(!flag) return false;
+            if(!flag){
+                // console.log("Я не прошел проверку", non_terminal_check_arr[w], check_arr)
+                return false;
+            } 
         }
-        check_arr.length = 0;
         // console.log(check_arr)
+        check_arr.length = 0;
     }
 
     // console.log("Вот что у нас получилось: ",non_terminal_check_arr, check_arr);
