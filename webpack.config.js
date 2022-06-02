@@ -11,10 +11,10 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, './dist'),
-        // library: {
-        //     name: 'MyLibrary',
-        //     type: 'var',
-        // },
+        library: {
+            name: 'qwertyGrammar',
+            type: 'var',
+        },
         filename: 'bundle.js',
     },
     plugins: [

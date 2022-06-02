@@ -114,7 +114,7 @@ export const styles = `<style>
         }
 
         .loading .dark{
-            position: relative;
+            position: absolute;
             top: 0;
             left: 0;
             height: 100vh;
@@ -271,4 +271,5 @@ export const styles = `<style>
                 transform: rotate(360deg);
             }
         }
-    </style>`
+    </style>
+`

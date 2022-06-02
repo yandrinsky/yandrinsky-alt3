@@ -2,58 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Title</title>
-    <style>
+<!--    <link  rel="stylesheet" href="vendor/css/reset.css"/>-->
+<!--    <link  rel="stylesheet" href="vendor/css/bootstrap.css"/>-->
+<!--    <link  rel="stylesheet" href="vendor/css/bootstrap-select.css"/>-->
 
-    </style>
+<!--    <script src="vendor/js/jquery.js" ></script>-->
+<!--    <script src="vendor/js/easeljs.js" ></script>-->
+<!--    <script src="vendor/js/tweenjs.js" ></script>-->
+<!--    <script src="vendor/js/bootstrap.js" ></script>-->
+<!--    <script src="vendor/js/bootstrap-select.js" ></script>-->
+
+<!--    <script src="core/taskManager.js" ></script>-->
+<!--    <script src="core/guiUtils.js" ></script>-->
+<!--    <script src="turing/script.js" ></script>-->
+
+
 </head>
 <body>
 
-
-
-<div id="root">
-    <div class="loading hide" id="loading">
-        <div class="dark"></div>
-        <div class="layout">
-            <div class="loader">
-                <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-            </div>
-
-            <div class="loading_step">
-                <div>Смотрим принадлежность грамматикам 2/2</div>
-                <div>Сопоставляем</div>
-                <div>Смотрим принадлежность грамматикам 1/2</div>
-                <div>Сопоставляем</div>
-                <div>Генерируем слова 2/2</div>
-                <div>Генерируем слова 1/2</div>
-            </div>
-            <div class="result opacityHidden">
-
-            </div>
-            <div class="reset">x</div>
-        </div>
-    </div>
-    <div class="layout">
-        <div class="side">
-            <div class="rules rules1">
-<!--                <div class="ruleBlock">-->
-<!--                    <input type="text" class="term_input" value="S" disabled>-->
-<!--                    <span>=></span>-->
-<!--                    <input type="text" class="noterm_input">-->
-<!--                </div>-->
-            </div>
-            <div class="add_ruleBlock" data-type="1">+</div>
-            <textarea name="" cols="30" rows="10" class="textarea_1 genFiend" id="genFiend" disabled>
-
-            </textarea>
-        </div>
-    </div>
-    <button class="compare">сравнить</button>
-
-
-
+<div class="container">
+    <div id="grammar"></div>
 </div>
+<script>
+    // qwertyfather.magic("turing1", $("#turing1").width(), qwerty00001.magic(),
+    //  '{"strip": "101", "alphabet": "01", ' +
+    //  '"empty": "0", ' +
+    //  '"usefianl": false, ' +
+    //  '"states": ["s1", "s2", "s3"], ' +
+    //  '"shift": 1}',
+    //         '{"commands":[{"id":1,"from":"s","to":"f","inp":"0","out":"0","move":"L","g":1},{"id":2,"from":"s","to":"f","inp":"1","out":"1","move":"L","g":2}],"groups":[{"id":1,"comment":""},{"id":2,"comment":""}],"strip":"101"}');
+
+    // qwertyfather.magic("self", $("#self").width(), new Self(),
+    //     '{"strip": "101", "alphabet": "01", ' +
+    //     '"empty": "0", ' +
+    //     '"usefianl": false, ' +
+    //     '"states": ["s1", "s2", "s3"], ' +
+    //     '"shift": 1}',
+    //     '{"commands":[{"id":1,"from":"s","to":"f","inp":"0","out":"0","move":"L","g":1},{"id":2,"from":"s","to":"f","inp":"1","out":"1","move":"L","g":2}],"groups":[{"id":1,"comment":""},{"id":2,"comment":""}],"strip":"101"}'
+    // );
+
+
+    // const grammar = qwertyGrammar.magic();
+    // grammar.init("grammar", 1920, "");
+
+
+</script>
+
 </body>
 </html>
