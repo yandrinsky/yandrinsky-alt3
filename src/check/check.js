@@ -1,5 +1,15 @@
 export function correct_grammar_check(obj_rule){ //Принимает в себя правила в виде единого объекта и проверяет правила на корректность ввода. Объект не мутируется
     let flag = true;
+    let non_terminal_check_arr = [];
+    let check_arr = [];
+    let non_terminal_all_arr = [];
+    let index = 0;
+
+    for(let key in obj_rule){
+        non_terminal_all_arr[index] = key;
+        index += 1;
+    }
+
     for(let key in obj_rule){ //Пробегаем по всем правилам
         if(typeof(obj_rule[key]) === "string"){ //Есди тип строка, то пробегаем по всем ее символам и проверяем - есть ли хоть один символ, который не равен ключу
             flag = true;
@@ -23,12 +33,79 @@ export function correct_grammar_check(obj_rule){ //Принимает в себ�
             if(!flag) return false;
         }
     } 
+
+    for(let key in obj_rule){ //Собираем все элементы, где есть переход в нетерминал
+        flag = false;
+        if(typeof(obj_rule[key]) === "string"){
+            for(let i = 0; i < obj_rule[key].length; i++){
+                if(non_terminal_all_arr.includes(obj_rule[key][i])) flag = true;
+            }
+            if(flag) non_terminal_check_arr.push(key);
+            flag = false;
+        }
+        else{
+            for(let i = 0; i < obj_rule[key].length; i++){
+                for(let j = 0; j < obj_rule[key][i].length; j++){
+                    if(non_terminal_all_arr.includes(obj_rule[key][i][j])) flag = true;
+                }
+            }
+            if(flag) non_terminal_check_arr.push(key);
+            flag = false;
+        }
+    }
+
+    for(let w = 0; w < non_terminal_check_arr.length; w++){
+        flag = true;
+        while(flag){
+            let flag_2 = true
+            let save = check_arr.length;
+            for(let i = 0; i < non_terminal_check_arr.length; i++){
+                if(typeof(obj_rule[non_terminal_check_arr[i]]) === "string"){
+                    for(let j = 0; j < obj_rule[non_terminal_check_arr[i]].length; j++){
+                        if(obj_rule[non_terminal_check_arr[i]][j] !== non_terminal_check_arr[w] && !check_arr.includes(obj_rule[non_terminal_check_arr[i]][j])) flag_2 = false;
+                    }
+                    if(flag_2 && !check_arr.includes(non_terminal_check_arr[i])) check_arr.push(non_terminal_check_arr[i]);
+                    flag_2 = true
+                }
+                else{
+                    for(let j = 0; j < obj_rule[non_terminal_check_arr[i]].length; j++){
+                        for(let z = 0; z < obj_rule[non_terminal_check_arr[i]][j].length; z++){
+                            if(obj_rule[non_terminal_check_arr[i]][j][z] !== non_terminal_check_arr[w] && !check_arr.includes(obj_rule[non_terminal_check_arr[i]][j][z])) flag_2 = false;
+                        }
+                    }
+                    if(flag_2 && !check_arr.includes(non_terminal_check_arr[i])) check_arr.push(non_terminal_check_arr[i]);
+                    flag_2 = true;
+                }
+            }
+            if(save === check_arr.length) flag = false;
+        }
+        if(typeof(obj_rule[non_terminal_check_arr[w]]) === "string"){
+            for(let i = 0; i < obj_rule[non_terminal_check_arr[w]].length; i++){
+                if(check_arr.includes(obj_rule[non_terminal_check_arr[w]][i])) return false
+            }
+        }
+        else{
+            flag = false;
+            let flag_2 = true;
+            for(let i = 0; i < obj_rule[non_terminal_check_arr[w]].length; i++){
+                for(let j = 0; j < obj_rule[non_terminal_check_arr[w]][i].length; j++){
+                    if(check_arr.includes(obj_rule[non_terminal_check_arr[w]][i][j])) flag_2 = false;
+                }
+                if(flag_2) flag = true;
+            }
+            if(!flag) return false;
+        }
+        check_arr.length = 0;
+        // console.log(check_arr)
+    }
+
+    // console.log("Вот что у нас получилось: ",non_terminal_check_arr, check_arr);
+
     return true;
 }
 
 
 export function CHF(obj_rule){ //Фунция получает набор правил в виде одного объекта и мутирует его
-    correct_grammar_check(obj_rule);
     if(Object.keys(obj_rule).length === 1 && obj_rule["S"] === "") return obj_rule;
     else{
         let counter = 0; //Счетчик новых символов
