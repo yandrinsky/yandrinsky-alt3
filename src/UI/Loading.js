@@ -18,8 +18,6 @@ export class Loading{
         this.resultField = this.element.querySelector(".layout").querySelector(".result");
         this.resetBtn.onclick = e => this.reset();
         this.darkArea.onclick = e => this.reset();
-
-        this.onCloseObserver = null;
     }
 
     next(){
@@ -27,8 +25,11 @@ export class Loading{
         this.element.classList.remove("hide");
         this.step += 1;
         this.loadingStep.children[5 - this.step].classList.add("done");
-
+        if(typeof this.onNextObserver === "function"){
+            this.onNextObserver();
+        }
     }
+
     final({check1, check2}){
         this.loader.classList.add("hide");
         this.resultField.innerHTML = `${check1} | ${check2}`;
@@ -72,5 +73,8 @@ export class Loading{
 
     setOnCloseObserver(callback) {
         this.onCloseObserver = callback;
+    }
+    setOnNextObserver(callback){
+        this.onNextObserver = callback;
     }
 }

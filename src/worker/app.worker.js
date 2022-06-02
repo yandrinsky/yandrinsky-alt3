@@ -7,7 +7,7 @@ function next(){
 }
 
 onmessage = ({ data: {message, payload} }) => {
-    const CHECK_TIME_LIMIT = 1500;
+    const CHECK_TIME_LIMIT = 3000;
     if(message === "start"){
         let time = Engine.speedtest(() => {
             console.log("start worker");
@@ -92,11 +92,6 @@ onmessage = ({ data: {message, payload} }) => {
             const check1 = (matchTrue.length + result1.length - unmatched.length) / (result1.length - unmatched.length + match.length) * 100
 
             next();
-            // let time2 = Engine.speedtest(() => {
-            //     unmatched = engine2.unmatched(result2, result1);
-            //     next();
-            //     match = unmatched.length ? unmatched.map((item) => engine1.checkWord(item)) : [true];
-            // })
 
             let time2 = Engine.speedtest(() => {
                 unmatched = engine2.unmatched(result2, result1);

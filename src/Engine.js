@@ -3,84 +3,9 @@ import {
     replaceAllDeterminate,
     includes,
     Unambiguous_conversion,
-    CYK_algorithm,
     CHF, CYK_algorithm2
 } from "./library";
 import {correct_grammar_check} from "./check/check";
-//{"S":"AB", "A":["BB", "a"], "B":["AB", "b"]}
-//Грамматики 3-го типа
-//Что за фигня с построением
-
-// grammar: [
-//     {sign: "S", res: "AB"},
-//     {sign: "A", res: "BB"}, {sign: "A", res: "a"},
-//     {sign: "B", res: "AB"},
-//     {sign: "B", res: "b"},
-// ],
-
-// grammar: [
-//     {sign: "S", res: "A"},
-//     {sign: "A", res: "B"}, {sign: "A", res: "C"}, {sign: "B", res: "E"},
-//     {sign: "C", res: "b"},
-//     {sign: "E", res: "A"},
-//     {sign: "E", res: "abc"},
-// ],
-
-// grammar: [
-//     {sign: "S", res: "A"},
-//     {sign: "A", res: "A"}, {sign: "A", res: "b"}, {sign: "A", res: "abc"}, {sign: "A", res: "A"},
-//
-// ],
-
-//
-// grammar: [
-//     {sign: "S", res: "Aa"},
-//     {sign: "A", res: "B+"}, {sign: "B", res: "Aa"},
-//     {sign: "B", res: "a"}
-// ],
-//[ 'a', '+a', 'a+a', '+a+a', 'a+a+a' ]
-//[ 'a', 'aa', 'aaa', 'a+aa', 'a+a+a' ]
-// grammar: [
-//     {sign: "S", res: "AC"},
-//     {sign: "A", res: "BF"}, {sign: "B", res: "AC"},
-//     {sign: "B", res: "a"},
-//     {sign: "C", res: "a"},
-//     {sign: "F", res: "+"},
-// ],
-// grammar: [
-//     {sign: "S", res: "Aa"},
-//     {sign: "A", res: "B+"}, {sign: "B", res: "Ca"},
-//     {sign: "C", res: "a+"}
-// ],
-// grammar: [
-//     {sign: "S", res: "aA"},
-//     {sign: "A", res: "+aA"}
-// ],
-// grammar: [
-//     {sign: "S", res: "A"},
-//     {sign: "A", res: "aBc"},
-//     {sign: "B", res: "deA"},
-//     {sign: "B", res: ""},
-// ],
-// grammar: [
-//     {sign: "S", res: "aaaA"},
-//     {sign: "A", res: "abcA"},
-//     {sign: "A", res: "bbb"},
-// ],
-
-//Контекстно свободные грамматики
-
-// grammar: [
-//     {sign: "S", res: "aabBBACbbb"},
-//     {sign: "A", res: "aaa"},
-// ],
-// grammar: [
-//     {sign: "S", res: "aSb"},
-//     {sign: "S", res: ""},
-// ],
-// grammar: [
-//     {sign: "S", res: "a"},
-// ],
 
 class Options{
     constructor() {
@@ -171,9 +96,7 @@ class Options{
     }
 
     checkGrammar(){
-        console.log("cluster is: ", this.rules.transformedCluster);
         const res = correct_grammar_check(this.rules.transformedCluster);
-        console.log("checkGrammar res", res);
         if(!res){
             throw new Error("Грамматика составлена некорректно");
         }
@@ -275,7 +198,6 @@ class Engine{
         // console.log("stack", stack[0].length + stack[1].length);
         // console.log("res", res.size);
         if(this.settings.PROCESS_STACK && (stack[0].length !== 0 || stack[1].length !== 0)){
-            //console.log("HERE IN PROCESS STACK")
             totalDepth.counter = 0;
             let unambiguous = Unambiguous_conversion(this.options.transformer());
             stack[0] = stack[0].sort((a, b) => a.length > b.length);
