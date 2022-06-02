@@ -37,6 +37,7 @@ onmessage = ({ data: {message, payload} }) => {
                 })
                 isError = true;
             }
+            if(isError) return
 
             next();
 
