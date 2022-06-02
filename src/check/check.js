@@ -84,7 +84,7 @@ export function correct_grammar_check(obj_rule){ //Принимает в себ�
                     flag_2 = true;
                 }
             }
-            if(save === check_arr.length) flag = false;
+            if(save === check_arr.length || check_arr.length > 20) flag = false;
         }
         if(typeof(obj_rule[non_terminal_check_arr[w]]) === "string"){
             for(let i = 0; i < obj_rule[non_terminal_check_arr[w]].length; i++){
@@ -125,7 +125,7 @@ export function CHF(obj_rule){ //Фунция получает набор пра
         del_epsilon(obj_rule); //Удаляем пустоту из набора правил
         counter =  some_term_sign(obj_rule)
         some_noterm_sign(obj_rule, counter[0], counter[1], counter[2])
-        go_myself_del(obj_rule)
+        go_myself_del(obj_rule);
         if(one_noterm(obj_rule));
         else{
             // if(typeof(obj_rule["S0"]) === "string") obj_rule["S0"] = obj_rule["S"].slice(0, obj_rule["S"].length)
@@ -157,6 +157,22 @@ export function go_myself_del(obj_rule){
         if(typeof(obj_rule[key]) === "object"){
             for(let i = 0; i < obj_rule[key].length; i++){
                 if(obj_rule[key][i] === key) obj_rule[key].splice(i, i)
+            }
+        }
+    }
+    for(let key in obj_rule){
+        for(let key2 in obj_rule){
+            if(typeof(obj_rule[key2]) === "object"){
+                for(let i = 0; i < obj_rule[key2].length; i++){
+                    if(obj_rule[key2][i] === key){
+                        if(obj_rule[key] === key2) obj_rule[key2].splice(i, i);
+                        else if(typeof(obj_rule[key]) === "object"){
+                            for(let j = 0; j < obj_rule[key].length; j++){
+                                if(obj_rule[key][i] === key2) obj_rule[key2].splice(i, i);
+                            }
+                        }
+                    } 
+                }
             }
         }
     }

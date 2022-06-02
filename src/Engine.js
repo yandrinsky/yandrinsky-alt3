@@ -221,7 +221,6 @@ class Engine{
 
         //Может выкинуть ошибку
         this.options.checkGrammar();
-
         this.options.setNormal();
         this.options.setUnambiguous();
     }
