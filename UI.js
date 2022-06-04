@@ -35,7 +35,7 @@ export class UI {
                     document.querySelector(".textarea_1").value = payload.map(item => item + "\t").join("");
                     break
                 case "GEN_2":
-                    // document.querySelector(".textarea_2").value = payload.map(item => item + "\t").join("");
+                    document.querySelector(".textarea_2").value = payload.map(item => item + "\t").join("");
                     break
                 case "ERROR":
                     loader.error(payload);
@@ -54,10 +54,15 @@ export class UI {
 
     getGrammars(){
         let grammar1 = [];
-        let grammar2 = this.grammar;
+        let grammar2 = []//this.grammar;
         let rules = document.querySelectorAll(".rules");
         rules[0].querySelectorAll(".ruleBlock").forEach(rule => {
             grammar1.push({
+                sign: rule.children[0].value, res: rule.children[2].value
+            })
+        })
+        rules[1].querySelectorAll(".ruleBlock").forEach(rule => {
+            grammar2.push({
                 sign: rule.children[0].value, res: rule.children[2].value
             })
         })
@@ -81,13 +86,13 @@ export class UI {
 
     recoverRules({grammar1, grammar2}) {
         let rules1 = grammar1.map((rule, index) => this.formRule(rule.sign, rule.res, rule.sign === "S" && index === 0)).join("");
-        // let rules2 = grammar2.map((rule, index) => this.formRule(rule.sign, rule.res, rule.sign === "S" && index === 0)).join("");
+        let rules2 = grammar2.map((rule, index) => this.formRule(rule.sign, rule.res, rule.sign === "S" && index === 0)).join("");
         if (rules1) {
             document.querySelector(".rules.rules1").insertAdjacentHTML("beforeend", rules1);
         }
-        // if(rules2){
-        //     document.querySelector(".rules.rules2").insertAdjacentHTML("beforeend", rules2);
-        // }
+        if(rules2){
+            document.querySelector(".rules.rules2").insertAdjacentHTML("beforeend", rules2);
+        }
     }
 
     getStoredGrammars() {
@@ -199,7 +204,7 @@ export class UI {
 
 
         document.querySelector(".compare").onclick = compare.bind(this);
-        document.querySelector(".check_word_button").onclick = checkUserWord.bind(this);
+        document.querySelectorAll(".check_word_button").forEach(item => item.onclick = checkUserWord.bind(this));
 
         //Восстанавливаем правила из прошлой сессии
         this.recoverRules(this.getStoredGrammars());
