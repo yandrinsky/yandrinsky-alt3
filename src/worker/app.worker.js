@@ -154,7 +154,7 @@ onmessage = ({ data: {message, payload} }) => {
             isError = true;
         }
         if(isError) return
-
+        console.log("engine2", engine2.options.rules.transformedCluster);
         postMessage({
             message: "CHECKING_USER_WORD"
         })
