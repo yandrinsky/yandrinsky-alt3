@@ -37,9 +37,9 @@ export class Loading{
         }
     }
 
-    final({check1, check2}){
+    final(str){
         this.loader.classList.add("hide");
-        this.resultField.innerHTML = `${check1} | ${check2}`;
+        this.resultField.innerHTML = str;
         this.loadingStep.classList.add("opacityHidden");
         setTimeout(() => {
             this.resultField.classList.remove("opacityHidden")

@@ -24,10 +24,13 @@ export const styles = `<style>
             text-align: center;
         }
         .noterm_input{
+            margin-left: 10px;
+        }
+
+        .input{
             height: 25px;
             padding: 5px;
             font-size: 16px;
-            margin-left: 10px;
         }
         .add_ruleBlock{
             width: 30px;
@@ -47,17 +50,20 @@ export const styles = `<style>
         }
           .compare{
             margin-top: 30px;
-            padding: 7px 10px;
-            background-color: greenyellow;
             position: fixed;
             bottom: 30px;
             right: 30px;
-            /*z-index: -1;*/
+            /*z-index: -1;*/  
+        }
+
+        .btn{
+            background-color: greenyellow;
+            padding: 7px 10px;
             cursor: pointer;
             border-radius: 6px;
             font-size: 16px;
-            
         }
+
         .side{
             width: 100%;
             margin-left: 10px;
@@ -65,7 +71,25 @@ export const styles = `<style>
             flex-direction: column;
             align-items: center;
         }
-     
+
+        .check_user_word {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: repeat(2, 1fr);
+            row-gap: 10px;
+            justify-items: center;
+            margin: 10px 0 20px 0;
+        }
+
+        .res_check_text{
+            opacity: 0;
+            transition: ease-in 200ms;
+        }
+
+        .check_word_button{
+            cursor: pointer;
+        }
+
         .layout{
             display: flex;
         }
@@ -154,6 +178,7 @@ export const styles = `<style>
             transition: opacity 0.3s ease-in;
             font-size: 40px;
             text-align: center;
+            width: 100%;
         }
 
         .opacityHidden{
@@ -271,5 +296,4 @@ export const styles = `<style>
                 transform: rotate(360deg);
             }
         }
-    </style>
-`
+    </style>`

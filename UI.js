@@ -20,8 +20,10 @@ export class UI {
                         "Генерируем слова 1/2",
                     ])
                     break
-                case "CHECK_WORD_START":
-
+                case "CHECKING_USER_WORD":
+                    loader.setSteps([
+                        "Проверяем слово...",
+                    ])
                     break
                 case "NEXT":
                     loader.next();
@@ -70,7 +72,7 @@ export class UI {
         return `<div class="ruleBlock">
             <input type="text" class="term_input" value="${sign ? sign : ""}" ${disabled ? "disabled" : ""}>
             <span>=></span>
-            <input type="text" class="noterm_input" value="${res ? res : ""}">
+            <input type="text" class="noterm_input input" value="${res ? res : ""}">
             ${
             !disabled ? "<div class=\"del\">D</div>" : ""
         }
@@ -182,11 +184,22 @@ export class UI {
             worker.postMessage({message: "START", payload: {grammar1, grammar2}});
         }
 
-        function checkWord(){
-
+        //Функция запустится по нажатию кнопки "Проверить"
+        function checkUserWord(e) {
+            const worker = this.setWorker(loader);
+            loader.setOnCloseObserver(() => {
+                worker.terminate();
+                //активирует кнопку "сравнить после" закрытия окна
+                document.querySelector(".compare").classList.remove("hide");
+            })
+            let {grammar1, grammar2} = this.getGrammars();
+            let word = document.querySelector(".check_word_input").value;
+            worker.postMessage({message: "CHECKING_USER_WORD", payload: {grammar1, grammar2, word}});
         }
 
+
         document.querySelector(".compare").onclick = compare.bind(this);
+        document.querySelector(".check_word_button").onclick = checkUserWord.bind(this);
 
         //Восстанавливаем правила из прошлой сессии
         this.recoverRules(this.getStoredGrammars());

@@ -132,13 +132,46 @@ onmessage = ({ data: {message, payload} }) => {
             const check2 = (matchTrue.length + result2.length - unmatched.length) / (result2.length - unmatched.length + match.length) * 100
             postMessage({
                 message: "FINAL",
-                payload: {
-                    check1: check1,
-                    check2: check2,
-                }
+                payload: `${Number(check1.toFixed(2))}|${Number(check2.toFixed(2))}`,
             });
         })
         console.log("time", time);
+    }
+    else if(message === "CHECKING_USER_WORD"){
+        let isError = false;
+        let check1;
+        let check2;
+        let engine1 = new Engine();
+        let engine2 = new Engine();
+        try{
+            engine1.setGrammar(payload.grammar1);
+            engine2.setGrammar(payload.grammar2);
+        } catch (e) {
+            postMessage({
+                message: "ERROR",
+                payload: e.message,
+            })
+            isError = true;
+        }
+        if(isError) return
+
+        postMessage({
+            message: "CHECKING_USER_WORD"
+        })
+
+        next();
+
+        check1 = engine1.checkWord(payload.word);
+        check2 = engine2.checkWord(payload.word);
+
+        postMessage({
+            message: "FINAL",
+            payload:
+             `<div style = "font-size: 24px">Слово ${payload.word} принадлежит к грамматике пользователя: <b>${check1 ? "Да" : "Нет"}</b></div>
+             <div style = "font-size: 24px">Слово ${payload.word} принадлежит к эталонной грамматике: <b>${check2 ? "Да" : "Нет"}</b></div>
+            `
+        });
+
     }
 
 };
