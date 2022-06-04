@@ -112,6 +112,7 @@ export const styles = `<style>
             width: 100%;
             height: 100%;
             position: fixed;
+            padding: 10px;
         }
       
 

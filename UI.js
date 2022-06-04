@@ -201,6 +201,18 @@ export class UI {
         document.querySelector(".compare").onclick = compare.bind(this);
         document.querySelector(".check_word_button").onclick = checkUserWord.bind(this);
 
+        document.querySelector(".check_word_input").onkeypress = e => {
+            if (!this.ruleValidator(e.key)) {
+                e.preventDefault();
+            }
+        }
+        document.querySelector(".check_word_input").onpaste = e => {
+            let sign = (event.clipboardData || window.clipboardData).getData('text');
+            if (!this.ruleValidator(sign)) {
+                e.preventDefault();
+            }
+        }
+
         //Восстанавливаем правила из прошлой сессии
         this.recoverRules(this.getStoredGrammars());
         //Навешиваем слушатели события на input грамматик
