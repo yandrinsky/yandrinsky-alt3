@@ -1,14 +1,7 @@
 export class Loading{
     constructor({id}) {
         this.step = -1;
-        this.steps = [
-            "Генерируем слова 1/2",
-            "Генерируем слова 2/2",
-            "Сопоставляем",
-            "Смотрим принадлежность грамматикам 1/2",
-            "Сопоставляем",
-            "Смотрим принадлежность грамматикам 2/2",
-        ]
+        this.steps = []
         this.id = id;
         this.element = document.querySelector("#" + id);
         this.resetBtn = this.element.querySelector(".reset");
@@ -20,11 +13,25 @@ export class Loading{
         this.darkArea.onclick = e => this.reset();
     }
 
+    setSteps(steps = []){
+        if(Array.isArray(steps)){
+            this.steps = steps;
+            this.loadingStep.innerHTML = steps.map(item => `<div>${item}</div>`).join("");
+        } else {
+            throw new Error("Loading: setSteps аргументом требует массив");
+        }
+    }
+
     next(){
         document.body.classList.add("overflowHidden")
         this.element.classList.remove("hide");
-        this.step += 1;
-        this.loadingStep.children[5 - this.step].classList.add("done");
+
+        if(this.step + 1 < this.steps.length){
+            this.step += 1;
+        }
+        console.log("next STEP", this.step);
+        console.log("this.steps", this.steps);
+        this.loadingStep.children[this.steps.length - 1 - this.step].classList.add("done");
         if(typeof this.onNextObserver === "function"){
             this.onNextObserver();
         }

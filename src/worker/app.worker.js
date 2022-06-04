@@ -8,9 +8,12 @@ function next(){
 
 onmessage = ({ data: {message, payload} }) => {
     const CHECK_TIME_LIMIT = 3000;
-    if(message === "start"){
+    console.log("start worker");
+    if(message === "START"){
         let time = Engine.speedtest(() => {
-            console.log("start worker");
+            postMessage({
+                message: "COMPARE_START"
+            })
             let isError = false;
             let engine1 = new Engine();
             let engine2 = new Engine();

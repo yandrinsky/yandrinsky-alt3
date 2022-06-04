@@ -8,12 +8,7 @@ export const HTMLLayout = `
             </div>
 
             <div class="loading_step">
-                <div>Смотрим принадлежность грамматикам 2/2</div>
-                <div>Сопоставляем</div>
-                <div>Смотрим принадлежность грамматикам 1/2</div>
-                <div>Сопоставляем</div>
-                <div>Генерируем слова 2/2</div>
-                <div>Генерируем слова 1/2</div>
+                
             </div>
             <div class="result opacityHidden">
 
