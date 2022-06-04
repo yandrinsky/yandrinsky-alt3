@@ -1,5 +1,5 @@
-export const HTMLLayout = `
-<div id="root">
+export const HTMLLayout = 
+`<div id="root">
     <div class="loading hide" id="loading">
         <div class="dark"></div>
         <div class="layout">
@@ -26,11 +26,14 @@ export const HTMLLayout = `
 <!--                </div>-->
             </div>
             <div class="add_ruleBlock" data-type="1">+</div>
+            <div class = "check_user_word">
+                <input type = "text" class="check_word_input input" size="26" placeholder = "Введите слово для проверки"></input>
+                <button class = "check_word_button btn">проверить слово</button>
+            </div>
             <textarea name="" cols="30" rows="10" class="textarea_1 genFiend" id="genFiend" disabled>
 
             </textarea>
         </div>
     </div>
-    <button class="compare">сравнить</button>
-</div>
-`
+    <button class="compare btn">сравнить</button>
+</div>`
