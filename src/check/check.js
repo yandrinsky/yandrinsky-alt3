@@ -142,7 +142,7 @@ export function CHF(obj_rule){ //Фунция получает набор пра
             obj_rule["S0"].push("")
         }
         else obj_rule["S0"] = "";
-        //console.log("!!!!",obj_rule)
+        console.log("!!!!",obj_rule)
         return obj_rule;
     }
     
@@ -271,16 +271,20 @@ export function some_noterm_sign(obj_rule, counter, alf, alf_NT_old){
     while(flag){
         string = null;
         for(let key in obj_rule){
+            //console.log("Посмотрим на правила: ",obj_rule);
             if(obj_rule[key].length > 2 && typeof(obj_rule[key]) === "string"){
                 counter_tild = 0
-                if(obj_rule[key][0] !== "~") save_string = obj_rule[key].slice(1, obj_rule[key].length)
+                if(obj_rule[key][0] !== "~" && obj_rule[key][1] !== "~") save_string = obj_rule[key].slice(1, obj_rule[key].length)
                 else{
-                    counter_tild = 0
+                    //console.log("Есть вхождение: ", obj_rule[key]);
+                    if(obj_rule[key][0] === "~")counter_tild = 0
+                    else counter_tild = 1
                     while(obj_rule[key][counter_tild + 1] !== "~"){
                         counter_tild += 1
                     }
                     save_string = obj_rule[key].slice(counter_tild + 2, obj_rule[key].length)
                     counter_tild += 1
+                    //console.log("Проверим, что получилось: ", obj_rule[key][counter_tild + 1], obj_rule[key]);
                     if(obj_rule[key][counter_tild + 1] === undefined) flag = false
                     else if(obj_rule[key][counter_tild + 1] === "~"){
                         let go = counter_tild + 2
@@ -288,10 +292,12 @@ export function some_noterm_sign(obj_rule, counter, alf, alf_NT_old){
                         if(obj_rule[key][go + 1] === undefined) flag = false
                     }
                 }
+                //console.log("Что по флагу, пацаны: ", flag, obj_rule[key]);
                 for(let key2 in obj_rule){
                     if(obj_rule[key2] === save_string && !(alf_NT_old.includes(key2))) repeat_def = key2
                 }
                 if(repeat_def === undefined && flag){
+                    //console.log("Что по флагу, пацаны(внутри if): ", flag, obj_rule[key]);
                     while(true){
                         if((alf.includes(`${counter}`, 0)) === false){
                             if(counter < 10) string = obj_rule[key].slice(0, counter_tild + 1) + `${counter}`;
@@ -307,24 +313,30 @@ export function some_noterm_sign(obj_rule, counter, alf, alf_NT_old){
                     }
                 }
                 else if(flag){
+                    //console.log("Что по флагу, пацаны(внутри else if): ", flag, obj_rule[key]);
                     string = obj_rule[key].slice(0, counter_tild + 1) + repeat_def;
                     obj_rule[key] = string;
                     repeat_def = undefined;
                 }
             }
             else if(typeof(obj_rule[key]) === "object" && flag){
+                //console.log("Есть вхождение в object: ", obj_rule[key]);
                 for(let i = 0; i < obj_rule[key].length; i++){
                     if(obj_rule[key][i].length > 2){
+                        //console.log("Есть вхождение: ", obj_rule[key]);
                         counter_tild = 0
-                        if(obj_rule[key][i][0] !== "~") save_string = obj_rule[key][i].slice(1, obj_rule[key][i].length)
+                        //console.log("Посмотрим на первый символ: ", obj_rule[key][i][0], obj_rule[key]);
+                        if(obj_rule[key][i][0] !== "~" && obj_rule[key][i][1] !== "~") save_string = obj_rule[key][i].slice(1, obj_rule[key][i].length)
                         else{
-                            counter_tild = 0
+                            if(obj_rule[key][i][0] === "~")counter_tild = 0
+                            else counter_tild = 1
                             while(obj_rule[key][i][counter_tild + 1] !== "~"){
                                 counter_tild += 1
                             }
                             save_string = obj_rule[key][i].slice(counter_tild + 2, obj_rule[key][i].length)
                             flag = false
                             counter_tild += 1
+                            //console.log("Проверим, что получилось: ", obj_rule[key][i][counter_tild + 1], obj_rule[key][i]);
                             if(obj_rule[key][i][counter_tild + 1] === undefined) flag = false
                             else if(obj_rule[key][i][counter_tild + 1] === "~"){
                                 let go = counter_tild + 2
@@ -335,7 +347,7 @@ export function some_noterm_sign(obj_rule, counter, alf, alf_NT_old){
                         for(let key2 in obj_rule){
                             if(obj_rule[key2] === save_string && !(alf_NT_old.includes(key2))) repeat_def = key2
                         }
-                        if(repeat_def === undefined){
+                        if(repeat_def === undefined && flag){
                             while(true){
                                 if((alf.includes(`${counter}`, 0)) === false){
                                     if(counter < 10) string = obj_rule[key][i].slice(0, counter_tild + 1) + `${counter}`;
@@ -350,7 +362,7 @@ export function some_noterm_sign(obj_rule, counter, alf, alf_NT_old){
                                 } 
                             }
                         }
-                        else{
+                        else if(flag){
                             string = obj_rule[key][i].slice(0, counter_tild + 1) + repeat_def;
                             obj_rule[key][i] = string;
                             repeat_def = undefined;
@@ -902,7 +914,7 @@ export function CYK_algorithm2(obj_rule, word){
     if(obj_rule === 0) return 0
 
     if(word === ""){
-        if(obj_rule["S0"].length !== 1) return true;
+        if(obj_rule["S0"].includes("")) return true;
         else return false
     }
 
@@ -938,7 +950,7 @@ export function CYK_algorithm2(obj_rule, word){
                             while(obj_rule[key][counter] !== "~"){
                                 counter += 1;
                             }
-                            if(arr[[k, j, obj_rule[key][0]]] === true && arr[[i - k - 1, j + k + 1, obj_rule[key].slice[1, obj_rule[key].length]]] === true){
+                            if(arr[[k, j, obj_rule[key][0]]] === true && arr[[i - k - 1, j + k + 1, obj_rule[key].slice(1, obj_rule[key].length)]] === true){
                                 arr[[i, j, key]] = true
                             }
                         }
@@ -963,7 +975,7 @@ export function CYK_algorithm2(obj_rule, word){
                                     while(obj_rule[key][z][counter] !== "~"){
                                         counter += 1;
                                     }
-                                    if(arr[[k, j, obj_rule[key][z][0]]] === true && arr[[i - k - 1, j + k + 1, obj_rule[key][z].slice[1, obj_rule[key][z].length]]] === true){
+                                    if(arr[[k, j, obj_rule[key][z][0]]] === true && arr[[i - k - 1, j + k + 1, obj_rule[key][z].slice(1, obj_rule[key][z].length)]] === true){
                                         arr[[i, j, key]] = true
                                     }
                                 }
