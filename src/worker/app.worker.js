@@ -7,7 +7,7 @@ function next(){
 }
 
 onmessage = ({ data: {message, payload} }) => {
-    const CHECK_TIME_LIMIT = 3000;
+    const CHECK_TIME_LIMIT = 2500;
     console.log("start worker");
     if(message === "START"){
         let time = Engine.speedtest(() => {
@@ -19,13 +19,13 @@ onmessage = ({ data: {message, payload} }) => {
             let engine2 = new Engine();
 
             engine1.setSettings({
-                RESULT_LIMIT: 1000,
+                RESULT_LIMIT: 1500,
                 STACK_LIMIT: 2000,
                 DEATH_TIME: 1500,
             });
 
             engine2.setSettings({
-                RESULT_LIMIT: 1000,
+                RESULT_LIMIT: 1500,
                 STACK_LIMIT: 2000,
                 DEATH_TIME: 1500,
             });
@@ -45,13 +45,14 @@ onmessage = ({ data: {message, payload} }) => {
             next();
 
             let result1 = engine1.generation();
+            console.log("result1.lang", result1.length);
             postMessage({
                 message: "GEN_1",
                 payload: result1,
             })
             next();
             let result2 = engine2.generation();
-
+            console.log("result2.lang", result2.length);
             postMessage({
                 message: "GEN_2",
                 payload: result2,
@@ -154,7 +155,6 @@ onmessage = ({ data: {message, payload} }) => {
             isError = true;
         }
         if(isError) return
-        console.log("engine2", engine2.options.rules.transformedCluster);
         postMessage({
             message: "CHECKING_USER_WORD"
         })

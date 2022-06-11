@@ -29,8 +29,6 @@ export class Loading{
         if(this.step + 1 < this.steps.length){
             this.step += 1;
         }
-        console.log("next STEP", this.step);
-        console.log("this.steps", this.steps);
         this.loadingStep.children[this.steps.length - 1 - this.step].classList.add("done");
         if(typeof this.onNextObserver === "function"){
             this.onNextObserver();
