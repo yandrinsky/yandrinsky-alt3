@@ -118,34 +118,34 @@ export function correct_grammar_check(obj_rule){ //Принимает в себ�
 
 
 export function CHF(obj_rule){ //Фунция получает набор правил в виде одного объекта и мутирует его
-    if(Object.keys(obj_rule).length === 1 && obj_rule["S"] === "") return obj_rule;
-    else{
-        let counter = 0; //Счетчик новых символов
-        start_el(obj_rule); //Добавляем новый первый элемент
-        del_epsilon(obj_rule); //Удаляем пустоту из набора правил
-        counter =  some_term_sign(obj_rule)
-        some_noterm_sign(obj_rule, counter[0], counter[1], counter[2])
-        go_myself_del(obj_rule);
-        if(one_noterm(obj_rule));
-        else{
-            // if(typeof(obj_rule["S0"]) === "string") obj_rule["S0"] = obj_rule["S"].slice(0, obj_rule["S"].length)
-            // else if(obj_rule["S"] !== undefined){
-            //     obj_rule["S0"] = obj_rule["S"].slice(0, obj_rule["S"].length)
-            //     obj_rule["S0"].push("")
-            // }
-            // else obj_rule["S0"] = "";
-            return 0;
-        } 
-        if(typeof(obj_rule["S0"]) === "string") obj_rule["S0"] = obj_rule["S"].slice(0, obj_rule["S"].length)
-        else if(obj_rule["S"] !== undefined){
-            obj_rule["S0"] = obj_rule["S"].slice(0, obj_rule["S"].length)
-            obj_rule["S0"].push("")
-        }
-        else obj_rule["S0"] = "";
-        // console.log("!!!!",obj_rule)
-        return obj_rule;
-    }
-    
+    // if(Object.keys(obj_rule).length === 1 && obj_rule["S"] === "") return obj_rule;
+    // else{
+    //     // let counter = 0; //Счетчик новых символов
+    //     // start_el(obj_rule); //Добавляем новый первый элемент
+    //     // del_epsilon(obj_rule); //Удаляем пустоту из набора правил
+    //     // counter =  some_term_sign(obj_rule)
+    //     // some_noterm_sign(obj_rule, counter[0], counter[1], counter[2])
+    //     // go_myself_del(obj_rule);
+    //     // if(one_noterm(obj_rule));
+    //     // else{
+    //     //     // if(typeof(obj_rule["S0"]) === "string") obj_rule["S0"] = obj_rule["S"].slice(0, obj_rule["S"].length)
+    //     //     // else if(obj_rule["S"] !== undefined){
+    //     //     //     obj_rule["S0"] = obj_rule["S"].slice(0, obj_rule["S"].length)
+    //     //     //     obj_rule["S0"].push("")
+    //     //     // }
+    //     //     // else obj_rule["S0"] = "";
+    //     //     return 0;
+    //     // }
+    //     // if(typeof(obj_rule["S0"]) === "string") obj_rule["S0"] = obj_rule["S"].slice(0, obj_rule["S"].length)
+    //     // else if(obj_rule["S"] !== undefined){
+    //     //     obj_rule["S0"] = obj_rule["S"].slice(0, obj_rule["S"].length)
+    //     //     obj_rule["S0"].push("")
+    //     // }
+    //     // else obj_rule["S0"] = "";
+    //     // // console.log("!!!!",obj_rule)
+    //     return obj_rule;
+    // }
+    return obj_rule;
 }
 
 export function start_el(obj_rule){
@@ -755,257 +755,6 @@ export function del_epsilon(obj_rule){
     }
 }
 
-// export function del_epsilon(obj_rule){ //Функция удаляет пустоту из набора правил
-//     let del_el = [];
-//     let flag = true;
-//     let flag_2 = true;
-//     let flag_3 = true;
-//     let flag_4 = true;
-//     let string;
-//
-//     for(let key in obj_rule){ //Пробегаемся по всем правилам
-//         if(obj_rule[key] === "") del_el.push(key); //Если правило является пустой строкой, то добавляем это правило в массив элементов для удаления
-//         else if(typeof(obj_rule[key]) === "object"){ //Если у нетернара несколько правил
-//             flag = false
-//             flag_2 = true;
-//             for(let i = 0; i < obj_rule[key].length; i++){ //Пробегаемся по всем правилам
-//                 if(obj_rule[key][i] === "") flag = true; //Проверяем условие, что нетернар переходит в пустоту
-//                 if(obj_rule[key][i] !== key && obj_rule[key][i] !== "") flag_2 = false; //Проверяем условие, что нетернар не переходит в себя и не переходит в пустоту
-//             }
-//             if(flag && flag_2) del_el.push(key); //Если выполнилось первое условие, но не выполнилось второе условие, то добавляем этот нетернар в массив элементов для удаления
-//         }
-//     }
-//     flag = true;
-//     while(flag){ //Будем выполнять цикл, пока на каждой итерации находится хотя бы один элемент, который является пустым
-//         flag_2 = false
-//         for(let key in obj_rule){ //Пробегаемся по всем правилам
-//             if(typeof(obj_rule[key]) === "string" && obj_rule[key].length === 1){ //Если нетернар имеет только одно правило перехода и количество символов после перехода равна 1
-//                 for(let j = 0; j < del_el.length; j++){ //Пробегаемся по массиву элементов для удаления
-//                     if(obj_rule[key] === del_el[j] && key !== "S0"){ //Если нетернар переходит в один из таких элементов и этот нетернар не является первым
-//                         for(let k = 0; k < del_el.length; k++){ //снова пробегаемся по массиву с эл-ми для удаления
-//                             if(key === del_el[k]) string = false; //Если такой элемент уже был в массиве, то пропускаем его
-//                         }
-//                         if(string === undefined){ //Если такого элемента не было, то добавляем его в массив и даем понять, что while должен быть выполнен еще раз
-//                             flag_2 = true;
-//                             del_el.push(key);
-//                         }
-//                         string = undefined
-//                     }
-//                     else if(obj_rule[key] === del_el[j] && key === "S0") obj_rule[key] = ["S", ""]
-//                 }
-//             }
-//             else if(typeof(obj_rule[key]) === "string" && obj_rule[key].length > 1){ //Если нетернар имеет только одно правило перехода и количество символов после перехода более 1
-//                 flag_3 = false;
-//                 flag_4 = true;
-//                 for(let i = 0; i < obj_rule[key].length; i++){ //Пробегаемся по всей строке перехода данного нетернара
-//                     for(let j = 0; j < del_el.length; j++){ //Пробегаемся по массиву с эл-ми для удаления
-//                         if(obj_rule[key][i] === del_el[j]) flag_3 = true;
-//                     }
-//                     if(!flag_3) flag_4 = false; //Проверяем каждый эл-т строки, если хотя бы один из них не является пустым, то мы его не добавляем
-//                     flag_3 = false
-//                 }
-//                 if(flag_4){ //Если все элементы строки, в которую переходит нетернар, в свою очередь переходят только в пустоту
-//                     for(let k = 0; k < del_el.length; k++){ //Проверяем был ли такой нетернар уже в массиве
-//                         if(key === del_el[k]) string = false;
-//                     }
-//                     if(string === undefined){//Если такого элемента не было, то добавляем его в массив и даем понять, что while должен быть выполнен еще раз
-//                         flag_2 = true;
-//                         del_el.push(key);
-//                     }
-//                     string = undefined
-//                 }
-//             }
-//             else if(typeof(obj_rule[key]) === "object"){ //Если нетернар переходит в несколько правил
-//                 for(let i = 0; i < obj_rule[key].length; i++){ //Пробегаемся по всем правилам
-//                     flag_3 = false
-//                     flag_4 = true
-//                     for(let j = 0; j < del_el.length; j++){
-//
-//                         if(obj_rule[key][i].length === 1){ //Если одно из правил - переход в один символ
-//                             if(obj_rule[key][i] === del_el[j] && key !== "S0") flag_3 = true;
-//
-//                             if(obj_rule[key][i] !== key && obj_rule[key][i] !== "" && obj_rule[key][i] !== del_el[j]){
-//                                 flag_4 = false;
-//                                 for(let k = 0; k < del_el.length; k++){
-//                                     if(obj_rule[key][i] === del_el[k]) flag_4 = true;
-//                                 }
-//                                 if(flag_4 === false) j = del_el.length;
-//                             }
-//                         }else{ //Если правило - переход в несколько символов ////////////////ОБНОВА//////////////////
-//                             for(let z = 0; z < obj_rule[key][i].length; z++){ //Пробегаемся по всем этим символам
-//                                 if(obj_rule[key][i][z] === del_el[j] && key !== "S0") flag_3 = true;
-//
-//                                 if(obj_rule[key][i][z] !== key && obj_rule[key][i][z] !== del_el[j]){
-//                                     flag_4 = false;
-//                                     for(let k = 0; k < del_el.length; k++){
-//                                         if(obj_rule[key][i][z] === del_el[k]) flag_4 = true;
-//                                     }
-//                                     if(flag_4 === false){
-//                                         j = del_el.length;
-//                                         z = obj_rule[key][i].length;
-//                                     }
-//                                 }
-//                             }
-//                         }
-//
-//                     }
-//                     if(flag_3 && flag_4){
-//                         for(let k = 0; k < del_el.length; k++){
-//                             if(key === del_el[k]) string = false;
-//                         }
-//                         if(string === undefined){
-//                             flag_2 = true;
-//                             del_el.push(key);
-//                         }
-//                         string = undefined
-//                     }
-//                     else if(!flag_4) i = obj_rule[key].length
-//                 }
-//             }
-//         }
-//         if(!flag_2) flag = false; //Если новых символов не появилось, то выходим из цикла while
-//     }
-//
-//     if(del_el.includes("S")){obj_rule["S0"] = ["S", ""];}
-//
-//     for(let i = 0; i < del_el.length; i++){ //Удаляем все нетернары, которые оказались в массиве на удаление
-//         delete obj_rule[del_el[i]];
-//     }
-//
-//     for(let key in obj_rule){
-//         if(typeof(obj_rule[key]) === "string" && obj_rule[key].length > 1){
-//             for(let i = 0; i < obj_rule[key].length; i++){
-//                 for(let j = 0; j < del_el.length; j++){
-//                     if(obj_rule[key][i] === del_el[j]){ //Если в строке есть нетернар из массива на удаление
-//                         string = obj_rule[key].slice(0, i) + obj_rule[key].slice(i + 1, obj_rule[key].length);
-//                         obj_rule[key] = string;
-//                         i -= 1;
-//                     }
-//                 }
-//             }
-//         }
-//         else if(typeof(obj_rule[key]) === "object" && key !== "S0"){
-//             for(let i = 0; i < obj_rule[key].length; i++){
-//                 for(let j = 0; j < obj_rule[key][i].length; j++){
-//                     for(let k = 0; k < del_el.length; k++){
-//                         if(obj_rule[key][i][j] === del_el[k] && obj_rule[key][i].length > 1){
-//                             string = obj_rule[key][i].slice(0, j) + obj_rule[key][i].slice(j + 1, obj_rule[key][i].length);
-//                             obj_rule[key][i] = string;
-//                             j -= 1;
-//                         }
-//                         else if (obj_rule[key][i][j] === del_el[k] && obj_rule[key][i].length === 1){
-//                             // obj_rule[key].splice(i, i)
-//                             // j -= 1;
-//                             // i -=1
-//                             obj_rule[key][i] = "";
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//     }
-//
-//     del_el.length = 0; //После того как мы нашли и убрали все нетернары, которые переходили только в пустоту мы очищаем массив
-//
-//     for(let key in obj_rule){
-//         if(typeof(obj_rule[key]) === "object" && key !== "S0"){
-//             for(let i = 0; i < obj_rule[key].length; i++){
-//                 if(obj_rule[key][i] === ""){ //Если нетернар переходит в пустоту
-//                     if(!del_el.includes(key, 0)){
-//                         del_el.push(key) //Добавляем этот эл-т в массив, который содержи в себе те нетернары, которые могут быть как пустотой, так и не пустотой
-//                         if(key === "S") obj_rule["S0"] = ["S", ""];
-//                     }
-//                     if(i !== 0){
-//                         obj_rule[key].splice(i, i) //Удаляем пустоту из элемента
-//                         i -= 1;
-//                     }
-//                     else obj_rule[key] = obj_rule[key].slice(1, obj_rule[key].length)
-//                 }
-//             }
-//         }
-//     }
-//
-//     flag = true;
-//     while(flag){
-//         flag_2 = false
-//         let check = 0;
-//         string = undefined
-//         for(let key in obj_rule){
-//             if(typeof(obj_rule[key]) === "string"){
-//                 for(let i = 0; i < obj_rule[key].length; i++){
-//                     for(let j = 0; j < del_el.length; j++){
-//                         if(obj_rule[key][i] === del_el[j]) check += 1;
-//                     }
-//                 }
-//                 if(check === obj_rule[key].length && key !== "S0"){
-//                     for(let k = 0; k < del_el.length; k++){
-//                         if(key === del_el[k]) string = false;
-//                     }
-//                     if(string === undefined){
-//                         flag_2 = true;
-//                         del_el.push(key);
-//                         if(key === "S") obj_rule["S0"] = ["S", ""];
-//                     }
-//                     string = undefined
-//                 }
-//                 check = 0;
-//             }
-//             else if(typeof(obj_rule[key]) === "object"){
-//                 for(let i = 0; i < obj_rule[key].length; i++){
-//                     for(let j = 0; j < obj_rule[key][i].length; j++){
-//                         for(let k = 0; k < del_el.length; k++){
-//                             if(obj_rule[key][i][j] === del_el[k]) check += 1;
-//                         }
-//                     }
-//                     if(check === obj_rule[key][i].length && key !== "S0"){
-//                         for(let z = 0; z < del_el.length; z++){
-//                             if(key === del_el[z]) string = false;
-//                         }
-//                         if(string === undefined){
-//                             flag_2 = true;
-//                             del_el.push(key);
-//                             if(key === "S") obj_rule["S0"] = ["S", ""];
-//                         }
-//                         string = undefined
-//                     }
-//                     check = 0;
-//                 }
-//             }
-//         }
-//         if(!flag_2) flag = false;
-//     }
-//
-//     for(let key in obj_rule){
-//         if(typeof(obj_rule[key]) === "string" && obj_rule[key].length > 1){
-//             for(let i = 0; i < obj_rule[key].length; i++){
-//                 for(let j = 0; j < del_el.length; j++){
-//                     if(obj_rule[key][i] === del_el[j]){
-//                         string = obj_rule[key].slice(0, i) + obj_rule[key].slice(i + 1, obj_rule[key].length);
-//                         if(typeof(obj_rule[key]) === "string") obj_rule[key] = [obj_rule[key]];
-//                         obj_rule[key].push(string);
-//                         //j -= 1;
-//                     }
-//                 }
-//             }
-//         if(typeof(obj_rule[key]) === "object" && key !== "S0"){
-//                 for(let i = 0; i < obj_rule[key].length; i++){
-//                     if(obj_rule[key][i].length > 1){
-//                         for(let j = 0; j < obj_rule[key][i].length; j++){
-//                             for(let k = 0; k < del_el.length; k++){
-//                                 if(obj_rule[key][i][j] === del_el[k]){
-//                                     string = obj_rule[key][i].slice(0, j) + obj_rule[key][i].slice(j + 1, obj_rule[key][i].length);
-//                                     obj_rule[key].push(string);
-//                                 }
-//                             }
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//     }
-//     if(del_el.includes("S")) obj_rule["S0"] = ["S", ""];
-// }
-
 export function rule_check(arr_rule, res_string, Intermediate_arr){
     for(let key in arr_rule){
         if(typeof(arr_rule[key]) === "string" && res_string === arr_rule[key]){
@@ -1143,6 +892,183 @@ export function CYK_algorithm(arr_rule, word){
     }
 }
 
+export function earley_algorithm(obj_grammar, word){
+    let Arr = [];
+    let num = 0;
+    let Arr_2;
+    Arr[0] = [["Л -> ~S", 0]];
+
+    for(let i = 0; i < (word.length + 1); i++){
+        let save = null;
+        num = scan(Arr, i, obj_grammar, word, num);
+        while(Arr[i] !== undefined && save !== Arr[i].length){
+            save = Arr[i].length;
+            complete(Arr, i, obj_grammar, word);
+            predict(Arr, i, obj_grammar, word);
+        }
+    }
+
+    Arr_2 = Arr[word.length];
+
+    console.log(Arr)
+    if(Arr_2 !== undefined){
+        for(let check = 0; check < Arr_2.length; check++){
+            if(Arr_2[check][0] === "Л -> S~"
+                && Arr_2[check][1] === 0){
+                return true
+            }
+        }
+    }
+
+    return false
+}
+
+function scan(Arr, i, obj_grammar, word, num){
+    let non_term = [];
+    let str = null;
+    for(let key in obj_grammar){
+        non_term.push(key);
+    }
+    let Arr_2 = Arr[i - 1]
+
+    if(i === 0){
+        return num
+    }
+    if(Arr_2 !== undefined){
+        for(let j = 0; j < Arr_2.length; j++){
+            let save;
+            let Arr_3 = Arr_2[j];
+            for(let z = 0; z < Arr_3[0].length; z++){
+
+                if(Arr_3[0][z] === "~"
+                    && Arr_3[0][z + 1] !== undefined
+                    && !non_term.includes(Arr_3[0][z + 1])
+                    && Arr_3[0][z + 1] === word[i - 1]){
+                    save = Arr_3[0][z + 1];
+                    str = Arr_3[0].slice(0, z) + save + "~" + Arr_3[0].slice(z+2, Arr_3[0].length);
+                    if(Arr[i] === undefined){
+                        Arr[i] = [[str, Arr_3[1]]]
+                    }
+                    else{
+                        Arr[i].push([str, Arr_3[1]]);
+                    }
+                }
+            }
+        }
+    }
+    return num;
+}
+
+function complete(Arr, i){
+    let Arr_2 = Arr[i];
+    let Arr_3;
+    let str;
+    let save;
+
+    if(Arr_2 !== undefined){
+        for(let j = 0; j < Arr_2.length; j++){
+            if(Arr_2[j][0][Arr_2[j][0].length-1] === "~"){
+                Arr_3 = Arr[Arr_2[j][1]];
+                for(let z = 0; z < Arr_3.length; z++){
+                    for(let w = 0; w < Arr_3[z][0].length; w++){
+                        let check_repeat = true
+                        if(Arr_3[z][0][w] === "~" && Arr_3[z][0][w+1] === Arr_2[j][0][0]){
+                            save = Arr_3[z][0][w + 1];
+                            str = Arr_3[z][0].slice(0, w) + save + "~" + Arr_3[z][0].slice(w+2, Arr_3[z][0].length);
+                            for(let check = 0; check < Arr[i].length; check++){
+                                if(Arr[i][check][0] === str && Arr[i][check][1] === Arr_3[z][1]){
+                                    check_repeat = false;
+                                }
+                            }
+                            if(check_repeat) {
+                                if(i === Arr_2[j][1]){
+                                    Arr[i][z] = [str, Arr_3[z][1]]
+                                }
+                                else{
+                                    Arr[i].push([str, Arr_3[z][1]]);
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+function del_eps(Arr, i, term, num){
+    let Arr_2 = Arr[i];
+    let str = null;
+    let check_repeat = null;
+    for(let j = 0; j < Arr_2.length; j++){
+        for(let z = 0; z < Arr_2[j][0].length; z++){
+            check_repeat = true
+            if(Arr_2[j][0][z] === "~" && Arr_2[j][0][z + 1] === term){
+                str = Arr_2[j][0].slice(0, z) + term + "~" + Arr_2[j][0].slice(z+2, Arr_2[j][0].length);
+                for(let check = 0; check < Arr[i].length; check++){
+                    if(Arr[i][check][0] === str && Arr[i][check][1] === num){
+                        check_repeat = false;
+                    }
+                }
+                if(check_repeat) {
+                    Arr[i].push([str, num])
+                }
+                if(check_repeat) z = 0;
+            }
+        }
+    }
+}
+
+function predict(Arr, i, obj_grammar){
+    let Arr_2 = Arr[i];
+    let non_term = [];
+    let check_repeat = null;
+    for(let key in obj_grammar){
+        non_term.push(key);
+    }
+    if(Arr_2 !== undefined){
+        for(let j = 0; j < Arr_2.length; j++){
+            for(let z = 0; z < Arr_2[j][0].length; z++){
+                check_repeat = true;
+                if(Arr_2[j][0][z] !== undefined
+                    && Arr_2[j][0][z] === "~"
+                    && Arr_2[j][0][z+1] !== undefined
+                    && non_term.includes(Arr_2[j][0][z+1])){
+                    if(typeof(obj_grammar[Arr_2[j][0][z+1]]) === "string"){
+                        if(obj_grammar[Arr_2[j][0][z+1]] === "") del_eps(Arr, i, Arr_2[j][0][z+1], Arr_2[j][1]);
+                        for(let check = 0; check < Arr[i].length; check++){
+                            if(Arr[i][check][0] === `${Arr_2[j][0][z+1]} -> ~${obj_grammar[Arr_2[j][0][z+1]]}`
+                                && Arr[i][check][1] === i){
+                                check_repeat = false;
+                            }
+                        }
+                        if(check_repeat !== false) check_repeat = true;
+                        if(check_repeat) {
+                            Arr[i].push([`${Arr_2[j][0][z+1]} -> ~${obj_grammar[Arr_2[j][0][z+1]]}`, i])
+                        }
+                    }else{
+                        for(let o = 0; o < obj_grammar[Arr_2[j][0][z+1]].length; o++){
+                            if(obj_grammar[Arr_2[j][0][z+1]][o] === "") del_eps(Arr, i, Arr_2[j][0][z+1], Arr_2[j][1]);
+                            check_repeat = true;
+                            for(let check = 0; check < Arr[i].length; check++){
+                                if(Arr[i][check][0] === `${Arr_2[j][0][z+1]} -> ~${obj_grammar[Arr_2[j][0][z+1]][o]}`
+                                    && Arr[i][check][1] === i){
+                                    check_repeat = false;
+                                }
+                            }
+                            if(check_repeat !== false) check_repeat = true;
+                            if(check_repeat) {
+                                Arr[i].push([`${Arr_2[j][0][z+1]} -> ~${obj_grammar[Arr_2[j][0][z+1]][o]}`, i])
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 export function CYK_algorithm2(obj_rule, word){
     let arr = [];
 
@@ -1193,7 +1119,7 @@ export function CYK_algorithm2(obj_rule, word){
                             if(arr[[k, j, obj_rule[key][0]]] === true && arr[[i - k - 1, j + k + 1, obj_rule[key][1]]] === true){
                                 arr[[i, j, key]] = true
                             }
-                        }   
+                        }
                     }
                     else if(typeof(obj_rule[key]) === "object"){
                         for(let z = 0; z < obj_rule[key].length; z++){
@@ -1218,7 +1144,7 @@ export function CYK_algorithm2(obj_rule, word){
                                     if(arr[[k, j, obj_rule[key][z][0]]] === true && arr[[i - k - 1, j + k + 1, obj_rule[key][z][1]]] === true){
                                         arr[[i, j, key]] = true
                                     }
-                                }   
+                                }
                             }
                         }
                     }

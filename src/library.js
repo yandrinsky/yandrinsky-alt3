@@ -1,7 +1,7 @@
 import {replaceAllDeterminate} from "./construction/construction";
 import {includes} from "./construction/construction";
 import {combinationIndexes} from "./construction/construction";
-import {CHF, CYK_algorithm, CYK_algorithm2, Unambiguous_conversion} from "./check/check";
+import {CHF, CYK_algorithm, CYK_algorithm2, earley_algorithm, Unambiguous_conversion} from "./check/check";
 
 
 
@@ -21,6 +21,10 @@ import {CHF, CYK_algorithm, CYK_algorithm2, Unambiguous_conversion} from "./chec
  */
 
 /**
+ @param earley_algorithm - функция, принимает и слово, проверяет слово на принадлежность грамматике, не нуждается в форме хомского, более надежная
+ */
+
+/**
  @param CHF - функция, принимает transformedCluster, препобразовывает в нормальную форму хомского, мутирует объект
  */
 
@@ -33,4 +37,4 @@ import {CHF, CYK_algorithm, CYK_algorithm2, Unambiguous_conversion} from "./chec
  */
 
 
-export {replaceAllDeterminate, includes, combinationIndexes, Unambiguous_conversion, CHF, CYK_algorithm, CYK_algorithm2};
+export {replaceAllDeterminate, includes, combinationIndexes, Unambiguous_conversion, CHF, CYK_algorithm, CYK_algorithm2, earley_algorithm};
