@@ -3,7 +3,7 @@ import {
     replaceAllDeterminate,
     includes,
     Unambiguous_conversion,
-    CHF, CYK_algorithm2
+    CHF, CYK_algorithm2, earley_algorithm
 } from "./library";
 import {correct_grammar_check} from "./check/check";
 
@@ -237,7 +237,8 @@ class Engine{
     }
 
     checkWord(word){
-        return CYK_algorithm2(this.options.rules.NTC, word);
+        // return CYK_algorithm2(this.options.rules.NTC, word);
+        return earley_algorithm(this.options.rules.NTC, word);
     }
 
     static speedtest(callback){
