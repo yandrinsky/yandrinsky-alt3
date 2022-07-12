@@ -2,10 +2,9 @@ import {
     combinationIndexes,
     replaceAllDeterminate,
     includes,
-    Unambiguous_conversion,
-    CHF, CYK_algorithm2, earley_algorithm
+    unambiguous_conversion,
 } from "./library";
-import {correct_grammar_check} from "./check/check";
+import {algorithm_of_earley, correct_grammar_check} from "./check/check";
 
 class Options{
     constructor() {
@@ -48,9 +47,6 @@ class Options{
                     determinates.push(sign);
                     return TC[sign] = rules;
                 })
-                // console.log("res", res);
-                // console.log("TC", TC);
-                // console.log("determinates", determinates);
                 let {chains, words} = replaceAllDeterminate(res, TC, determinates, includes, 1000, 1000);
                 words.forEach(word => add({sign: rule.sign, res: word}));
             } else {
@@ -86,13 +82,9 @@ class Options{
         this.rules.grammar = grammar;
     }
 
-    setNormal(){
-        //NormalizedTransformedCluster
-        this.rules.NTC = CHF(this.transformer());
-    }
     setUnambiguous(){
         //UnambiguousTransformedCluster
-        this.rules.UTC = Unambiguous_conversion(this.transformer());
+        this.rules.UTC = unambiguous_conversion(this.transformer());
     }
 
     checkGrammar(){
@@ -144,7 +136,6 @@ class Engine{
 
         //Может выкинуть ошибку
         this.options.checkGrammar();
-        this.options.setNormal();
         this.options.setUnambiguous();
     }
 
@@ -155,7 +146,6 @@ class Engine{
     generation(){
         let str = ["S"];
 
-        //let res = [];
         let res = new Set();
         let totalDepth = new this.Counter();
 
@@ -171,10 +161,8 @@ class Engine{
 
                 let {chains, words} = this.system.replaceAllDeterminate(curStr, transformedCluster, this.options.determinate, this.system.includes, STACK_LIMIT - stack[0].length - stack[1].length, RESULT_LIMIT - res.length);
                 if(chains.length === 0 && words.length === 0){ //Если никаких изменений не произошло, значит это готове слово;
-                    //res.push(curStr);
                     res.add(curStr);
                 }
-                //res.push(...words);
                 words.forEach(word => res.size < RESULT_LIMIT ? res.add(word) : null);
 
                 if(stack[0].length === 0) {
@@ -193,19 +181,13 @@ class Engine{
 
 
         start(this.options.rules.transformedCluster, this.settings.TREE_DEPTH_LIMIT, this.settings.RESULT_LIMIT, this.settings.STACK_LIMIT, this.settings.DEATH_TIME);
-        // console.log("totalDepth", totalDepth.counter);
-        //
-        // console.log("stack", stack[0].length + stack[1].length);
-        // console.log("res", res.size);
         if(this.settings.PROCESS_STACK && (stack[0].length !== 0 || stack[1].length !== 0)){
             totalDepth.counter = 0;
-            let unambiguous = Unambiguous_conversion(this.options.transformer());
+            let unambiguous = unambiguous_conversion(this.options.transformer());
             stack[0] = stack[0].sort((a, b) => a.length > b.length);
             stack[1] = stack[1].sort((a, b) => a.length > b.length);
             start(unambiguous, this.settings.TREE_DEPTH_LIMIT, this.settings.RESULT_LIMIT, this.settings.STACK_LIMIT * 2, this.settings.DEATH_TIME)
         }
-        // console.log("stack", stack[0].length + stack[1].length);
-        // console.log("res", res.size);
         res = Array.from(res);
         return res.sort((a, b) => a.length > b.length);
     }
@@ -237,8 +219,7 @@ class Engine{
     }
 
     checkWord(word){
-        // return CYK_algorithm2(this.options.rules.NTC, word);
-        return earley_algorithm(this.options.rules.NTC, word);
+        return algorithm_of_earley(this.options.rules.transformedCluster, word);
     }
 
     static speedtest(callback){

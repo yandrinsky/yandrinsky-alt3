@@ -1,4 +1,6 @@
-export function correct_grammar_check(obj_rule){ //Принимает в себя правила в виде единого объекта и проверяет правила на корректность ввода. Объект не мутируется
+//Принимает в себя правила в виде единого объекта и проверяет правила на корректность ввода. Объект не мутируется
+export function correct_grammar_check(obj_rule){
+
     let flag = true;
     let non_terminal_check_arr = [];
     let check_arr = [];
@@ -10,8 +12,10 @@ export function correct_grammar_check(obj_rule){ //Принимает в себ�
         index += 1;
     }
 
-    for(let key in obj_rule){ //Пробегаем по всем правилам
-        if(typeof(obj_rule[key]) === "string"){ //Есди тип строка, то пробегаем по всем ее символам и проверяем - есть ли хоть один символ, который не равен ключу
+    //Пробегаем по всем правилам
+    for(let key in obj_rule){
+        //Есди тип строка, то пробегаем по всем ее символам и проверяем - есть ли хоть один символ, который не равен ключу
+        if(typeof(obj_rule[key]) === "string"){
             flag = true;
             for(let i = 0; i < obj_rule[key].length; i++){
                 if(obj_rule[key][i] === key) flag = false;
@@ -28,9 +32,13 @@ export function correct_grammar_check(obj_rule){ //Принимает в себ�
                         counter += 1;
                     } 
                 }
-                if(counter === obj_rule[key][i].length) flag = true;
+                if(counter === obj_rule[key][i].length){
+                    flag = true;
+                }
             }
-            if(!flag) return false;
+            if(!flag) {
+                return false;
+            }
         }
     } 
 
@@ -59,14 +67,15 @@ export function correct_grammar_check(obj_rule){ //Принимает в себ�
         while(flag){
             let flag_2 = true
             let save = check_arr.length;
-            // console.log("Входим: ", non_terminal_check_arr[w])
             for(let i = 0; i < non_terminal_check_arr.length; i++){
                 if(typeof(obj_rule[non_terminal_check_arr[i]]) === "string"){
                     for(let j = 0; j < obj_rule[non_terminal_check_arr[i]].length; j++){
-                        if(obj_rule[non_terminal_check_arr[i]][j] !== non_terminal_check_arr[w] && !check_arr.includes(obj_rule[non_terminal_check_arr[i]][j])) flag_2 = false;
+                        if(obj_rule[non_terminal_check_arr[i]][j] !== non_terminal_check_arr[w] &&
+                            !check_arr.includes(obj_rule[non_terminal_check_arr[i]][j])) {
+                            flag_2 = false;
+                        }
                     }
                     if(flag_2 && !check_arr.includes(non_terminal_check_arr[i])){
-                        // console.log("Я прошел проверку в блоке проверки СТРОКИ: ", non_terminal_check_arr[i])
                         check_arr.push(non_terminal_check_arr[i]);
                     } 
                     flag_2 = true
@@ -78,7 +87,6 @@ export function correct_grammar_check(obj_rule){ //Принимает в себ�
                         }
                     }
                     if(flag_2 && !check_arr.includes(non_terminal_check_arr[i])){
-                        // console.log("Я прошел проверку в блоке проверки Массива: ", non_terminal_check_arr[i])
                         check_arr.push(non_terminal_check_arr[i]);
                     } 
                     flag_2 = true;
@@ -96,803 +104,22 @@ export function correct_grammar_check(obj_rule){ //Принимает в себ�
             let flag_2 = true;
             for(let i = 0; i < obj_rule[non_terminal_check_arr[w]].length; i++){
                 for(let j = 0; j < obj_rule[non_terminal_check_arr[w]][i].length; j++){
-                    // console.log("Буква", non_terminal_check_arr[w], obj_rule[non_terminal_check_arr[w]][i][j])
                     if(check_arr.includes(obj_rule[non_terminal_check_arr[w]][i][j])) flag_2 = false;
                 }
                 if(flag_2) flag = true;
                 flag_2 = true;
             }
             if(!flag){
-                // console.log("Я не прошел проверку", non_terminal_check_arr[w], check_arr)
                 return false;
             } 
         }
-        // console.log(check_arr)
         check_arr.length = 0;
     }
-
-    // console.log("Вот что у нас получилось: ",non_terminal_check_arr, check_arr);
 
     return true;
 }
 
-
-export function CHF(obj_rule){ //Фунция получает набор правил в виде одного объекта и мутирует его
-    // if(Object.keys(obj_rule).length === 1 && obj_rule["S"] === "") return obj_rule;
-    // else{
-    //     // let counter = 0; //Счетчик новых символов
-    //     // start_el(obj_rule); //Добавляем новый первый элемент
-    //     // del_epsilon(obj_rule); //Удаляем пустоту из набора правил
-    //     // counter =  some_term_sign(obj_rule)
-    //     // some_noterm_sign(obj_rule, counter[0], counter[1], counter[2])
-    //     // go_myself_del(obj_rule);
-    //     // if(one_noterm(obj_rule));
-    //     // else{
-    //     //     // if(typeof(obj_rule["S0"]) === "string") obj_rule["S0"] = obj_rule["S"].slice(0, obj_rule["S"].length)
-    //     //     // else if(obj_rule["S"] !== undefined){
-    //     //     //     obj_rule["S0"] = obj_rule["S"].slice(0, obj_rule["S"].length)
-    //     //     //     obj_rule["S0"].push("")
-    //     //     // }
-    //     //     // else obj_rule["S0"] = "";
-    //     //     return 0;
-    //     // }
-    //     // if(typeof(obj_rule["S0"]) === "string") obj_rule["S0"] = obj_rule["S"].slice(0, obj_rule["S"].length)
-    //     // else if(obj_rule["S"] !== undefined){
-    //     //     obj_rule["S0"] = obj_rule["S"].slice(0, obj_rule["S"].length)
-    //     //     obj_rule["S0"].push("")
-    //     // }
-    //     // else obj_rule["S0"] = "";
-    //     // // console.log("!!!!",obj_rule)
-    //     return obj_rule;
-    // }
-    return obj_rule;
-}
-
-export function start_el(obj_rule){
-    obj_rule["S0"] = "S" //Получаем старый входной символ набора правил
-}
-
-export function go_myself_del(obj_rule){
-    for(let key in obj_rule){
-        if(typeof(obj_rule[key]) === "object"){
-            for(let i = 0; i < obj_rule[key].length; i++){
-                if(obj_rule[key][i] === key) obj_rule[key].splice(i, i)
-            }
-        }
-    }
-    for(let key in obj_rule){
-        for(let key2 in obj_rule){
-            if(typeof(obj_rule[key2]) === "object"){
-                for(let i = 0; i < obj_rule[key2].length; i++){
-                    if(obj_rule[key2][i] === key){
-                        if(obj_rule[key] === key2) obj_rule[key2].splice(i, i);
-                        else if(typeof(obj_rule[key]) === "object"){
-                            for(let j = 0; j < obj_rule[key].length; j++){
-                                if(obj_rule[key][i] === key2) obj_rule[key2].splice(i, i);
-                            }
-                        }
-                    } 
-                }
-            }
-        }
-    }
-}
-
-export function one_noterm(obj_rule){
-    let no_term_arr = [];
-    let index = 0;
-    let flag = true;
-    let flag_2 = true;
-    let flag_3;
-
-    for(let key in obj_rule){
-        no_term_arr[index] = key;
-        index += 1;
-    }
-    while(flag){
-        flag = false;
-        for(let key in obj_rule){
-            if(obj_rule[key].length === 1 && typeof(obj_rule[key]) === "string" && key !== "S0"){
-                for(let i = 0; i < no_term_arr.length; i++){
-                    if(obj_rule[key] === no_term_arr[i] && key !== no_term_arr[i] && key !== "S0"){
-                        flag = true;
-                        obj_rule[key] = go_to_norm_rule(obj_rule, no_term_arr, obj_rule[key]);
-                        if(obj_rule[key] === undefined) return 0;
-                    }
-                    else if(obj_rule[key] === no_term_arr[i] && key === no_term_arr[i]) return 0;
-                }
-            }
-            else if(typeof(obj_rule[key]) === "object"){
-                for(let j = 0; j < obj_rule[key].length; j++){
-                    if(obj_rule[key][j].length === 1){
-                        for(let i = 0; i < no_term_arr.length; i++){
-                            if(obj_rule[key][j] === no_term_arr[i] && key !== no_term_arr[i] && key !== "S0"){
-
-                                flag = true;
-                                obj_rule[key][j] = go_to_norm_rule(obj_rule, no_term_arr, obj_rule[key][j]);
-                                if(obj_rule[key][j] === undefined) return 0;
-                                let stop = 0;
-                                for(let key3 in obj_rule){
-                                    if(typeof(obj_rule[key3]) === "object"){
-                                        for(let w = 0; w < obj_rule[key3].length; w++){
-                                            if(typeof(obj_rule[key3][w]) === "object"){
-                                                for(let z = 0; z < obj_rule[key3][w].length; z++){
-                                                    stop += 1;
-                                                    obj_rule[key3].push(obj_rule[key3][w][z])
-                                                }
-                                                obj_rule[key3][w] = "";
-                                                for(let p = w; p < obj_rule[key3].length - 1; p++){
-                                                    obj_rule[key3][p] = obj_rule[key3][p + 1]
-                                                }
-                                                obj_rule[key3].pop();
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            else if(obj_rule[key][j] === no_term_arr[i] && key === no_term_arr[i]) return 0
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return 1
-}
-
-export function go_to_norm_rule(obj_rule, no_term_arr, elem){
-    let save;
-    if(obj_rule[elem].length > 1 || obj_rule[elem] === undefined) return obj_rule[elem];
-    else{
-        if(typeof(obj_rule[elem]) === "string"){
-            for(let i = 0; i < no_term_arr.length; i++){
-                if(obj_rule[elem] === no_term_arr[i] && elem !== no_term_arr[i]) save = go_to_norm_rule(obj_rule, no_term_arr, obj_rule[elem]);
-                else return;
-            }
-            if(save === undefined) return obj_rule[elem];
-        }
-        else{
-            for(let i = 0; i < no_term_arr.length; i++){
-                if(obj_rule[elem][0] === no_term_arr[i]) save = go_to_norm_rule(obj_rule, no_term_arr, obj_rule[elem][0]);
-            }
-            if(save === undefined) return obj_rule[elem];
-        }
-    }
-    return save
-}
-
-export function some_noterm_sign(obj_rule, counter, alf, alf_NT_old){
-    let string;
-    let save_string;
-    let repeat_def;
-    let counter_tild = 0;
-    let flag = true;
-
-    while(flag){
-        string = null;
-        for(let key in obj_rule){
-            //console.log("Посмотрим на правила: ",obj_rule);
-            if(obj_rule[key].length > 2 && typeof(obj_rule[key]) === "string"){
-                counter_tild = 0
-                if(obj_rule[key][0] !== "~" && obj_rule[key][1] !== "~") save_string = obj_rule[key].slice(1, obj_rule[key].length)
-                else{
-                    //console.log("Есть вхождение: ", obj_rule[key]);
-                    if(obj_rule[key][0] === "~")counter_tild = 0
-                    else counter_tild = 1
-                    while(obj_rule[key][counter_tild + 1] !== "~"){
-                        counter_tild += 1
-                    }
-                    save_string = obj_rule[key].slice(counter_tild + 2, obj_rule[key].length)
-                    counter_tild += 1
-                    //console.log("Проверим, что получилось: ", obj_rule[key][counter_tild + 1], obj_rule[key]);
-                    if(obj_rule[key][counter_tild + 1] === undefined) flag = false
-                    else if(obj_rule[key][counter_tild + 1] === "~"){
-                        let go = counter_tild + 2
-                        while(obj_rule[key][go] !== "~") go += 1;
-                        if(obj_rule[key][go + 1] === undefined) flag = false
-                    }
-                }
-                //console.log("Что по флагу, пацаны: ", flag, obj_rule[key]);
-                for(let key2 in obj_rule){
-                    if(obj_rule[key2] === save_string && !(alf_NT_old.includes(key2))) repeat_def = key2
-                }
-                if(repeat_def === undefined && flag){
-                    //console.log("Что по флагу, пацаны(внутри if): ", flag, obj_rule[key]);
-                    while(true){
-                        if((alf.includes(`${counter}`, 0)) === false){
-                            if(counter < 10) string = obj_rule[key].slice(0, counter_tild + 1) + `${counter}`;
-                            else string = obj_rule[key].slice(0, counter_tild + 1) + `~${counter}~`;
-                            obj_rule[key] = string;
-                            if(counter < 10) obj_rule[`${counter}`] = save_string;
-                            else obj_rule[`~${counter}~`] = save_string;
-                            counter += 1;
-                            break;
-                        }else{
-                            counter += 1 
-                        } 
-                    }
-                }
-                else if(flag){
-                    //console.log("Что по флагу, пацаны(внутри else if): ", flag, obj_rule[key]);
-                    string = obj_rule[key].slice(0, counter_tild + 1) + repeat_def;
-                    obj_rule[key] = string;
-                    repeat_def = undefined;
-                }
-            }
-            else if(typeof(obj_rule[key]) === "object" && flag){
-                //console.log("Есть вхождение в object: ", obj_rule[key]);
-                for(let i = 0; i < obj_rule[key].length; i++){
-                    if(obj_rule[key][i].length > 2){
-                        //console.log("Есть вхождение: ", obj_rule[key]);
-                        counter_tild = 0
-                        //console.log("Посмотрим на первый символ: ", obj_rule[key][i][0], obj_rule[key]);
-                        if(obj_rule[key][i][0] !== "~" && obj_rule[key][i][1] !== "~") save_string = obj_rule[key][i].slice(1, obj_rule[key][i].length)
-                        else{
-                            if(obj_rule[key][i][0] === "~")counter_tild = 0
-                            else counter_tild = 1
-                            while(obj_rule[key][i][counter_tild + 1] !== "~"){
-                                counter_tild += 1
-                            }
-                            save_string = obj_rule[key][i].slice(counter_tild + 2, obj_rule[key][i].length)
-                            flag = false
-                            counter_tild += 1
-                            //console.log("Проверим, что получилось: ", obj_rule[key][i][counter_tild + 1], obj_rule[key][i]);
-                            if(obj_rule[key][i][counter_tild + 1] === undefined) flag = false
-                            else if(obj_rule[key][i][counter_tild + 1] === "~"){
-                                let go = counter_tild + 2
-                                while(obj_rule[key][i][go] !== "~") go += 1;
-                                if(obj_rule[key][i][go + 1] === undefined) flag = false
-                            }
-                        }
-                        for(let key2 in obj_rule){
-                            if(obj_rule[key2] === save_string && !(alf_NT_old.includes(key2))) repeat_def = key2
-                        }
-                        if(repeat_def === undefined && flag){
-                            while(true){
-                                if((alf.includes(`${counter}`, 0)) === false){
-                                    if(counter < 10) string = obj_rule[key][i].slice(0, counter_tild + 1) + `${counter}`;
-                                    else string = obj_rule[key][i].slice(0, counter_tild + 1) + `~${counter}~`;
-                                    obj_rule[key][i] = string;
-                                    if(counter < 10) obj_rule[`${counter}`] = save_string;
-                                    else obj_rule[`~${counter}~`] = save_string;
-                                    counter += 1;
-                                    break;
-                                }else{
-                                    counter += 1 
-                                } 
-                            }
-                        }
-                        else if(flag){
-                            string = obj_rule[key][i].slice(0, counter_tild + 1) + repeat_def;
-                            obj_rule[key][i] = string;
-                            repeat_def = undefined;
-                        }
-                    }
-                }
-            }
-        }
-        if(string === null) flag = false;
-    }
-    return counter;
-}
-
-export function some_term_sign(obj_rule){
-    let step_check = false;
-    let alf = [];
-    let alf_NT_old = [];
-    let save_term;
-    let string;
-    let index = 0;
-    let repeat_def;
-    let check_term = true;
-
-    for(let key in obj_rule){
-        if(typeof(obj_rule[key]) === "string"){
-            for(let i = 0; i < obj_rule[key].length; i++){
-                if((obj_rule[key][i] in obj_rule) === false && (alf.includes(obj_rule[key][i], 0)) === false) alf.push(obj_rule[key][i])
-                else if((obj_rule[key][i] in obj_rule) === true && (alf_NT_old.includes(obj_rule[key][i], 0)) === false) alf_NT_old.push(obj_rule[key][i])
-            }
-        }
-        else if(typeof(obj_rule[key]) === "object"){
-            for(let i = 0; i < obj_rule[key].length; i++){
-                for(let j = 0; j < obj_rule[key][i].length; j++){
-                    if((obj_rule[key][i][j] in obj_rule) === false && (alf.includes(obj_rule[key][i][j], 0)) === false) alf.push(obj_rule[key][i][j]);
-                    else if((obj_rule[key][i][j] in obj_rule) === true && (alf_NT_old.includes(obj_rule[key][i][j], 0)) === false) alf_NT_old.push(obj_rule[key][i][j])
-                }
-            }
-        }
-    }
-
-    for(let key in obj_rule){
-        if(typeof(obj_rule[key]) === "string" && obj_rule[key].length > 1){
-            for(let i = 0; i < obj_rule[key].length; i++){
-                for(let key_2 in obj_rule){
-                    if(obj_rule[key][i] === key_2 || obj_rule[key][i] === "~"){
-                        check_term = false;
-                        if(obj_rule[key][i] === "~"){
-                            let counter_tild = i + 1;
-                            while(obj_rule[key][counter_tild] !== "~"){
-                                counter_tild += 1
-                            }
-                            i = counter_tild + 1;
-                        }   
-                        break
-                    }
-                }
-                if(check_term === true){
-                    save_term = obj_rule[key][i];
-                    for(let key2 in obj_rule){
-                        if(obj_rule[key2] === save_term && !(alf_NT_old.includes(key2))) repeat_def = key2;
-                    }
-                    if(repeat_def === undefined){
-                        while(true){
-                            if((alf.includes(`${index}`, 0)) === false){
-                                if(index < 10){
-                                    string = obj_rule[key].slice(0, i) + `${index}` + obj_rule[key].slice(i + 1, obj_rule[key].length);
-                                }
-                                else{
-                                    string = obj_rule[key].slice(0, i) + `~${index}~` + obj_rule[key].slice(i + 1, obj_rule[key].length);
-                                }
-                                obj_rule[key] = string;
-                                if(index < 10) obj_rule[`${index}`] = save_term;
-                                else obj_rule[`~${index}~`] = save_term;
-                                index += 1;
-                                i = -1;
-                                break;
-                            }else{
-                                index += 1 
-                            } 
-                        }
-                    }
-                    else{
-                        string = obj_rule[key].slice(0, i) + `${repeat_def}` + obj_rule[key].slice(i + 1, obj_rule[key].length);
-                        obj_rule[key] = string;
-                        repeat_def = undefined
-                        i = -1
-                    }
-                }
-                check_term = true;
-            }
-        }
-        else if(typeof(obj_rule[key]) === "object"){
-            for(let i = 0; i < obj_rule[key].length; i++){
-                if(obj_rule[key][i].length > 1){
-                    for(let j = 0; j < obj_rule[key][i].length; j++){
-                        for(let key_2 in obj_rule){
-                            //console.log(obj_rule[key][i][j], key_2)
-                            if(obj_rule[key][i][j] === key_2 || obj_rule[key][i][j] === "~"){
-                                check_term = false;
-                                //console.log("Залез в проверку", j)
-                                if(obj_rule[key][i][j] === "~"){
-                                    let counter_tild = j + 1;
-                                    //console.log("Нашел тильду до while", obj_rule[key][i], obj_rule[key][i][j])
-                                    while(obj_rule[key][i][counter_tild] !== "~"){
-                                        counter_tild += 1
-                                    }
-                                    j = counter_tild;
-                                    //console.log("Нашел тильду после while", obj_rule[key][i], obj_rule[key][i][j])
-                                }  
-                                break
-                            }
-                        }
-                        //console.log("Перед проверкой на тернарность", j, obj_rule[key][i][j])
-                        
-                        if(check_term === true){
-                            //console.log("Прошел отбор на тернарность", obj_rule[key][i], obj_rule[key][i][j], j)
-                            save_term = obj_rule[key][i][j];
-                            for(let key2 in obj_rule){
-                                if(obj_rule[key2] === save_term && !(alf_NT_old.includes(key2))) repeat_def = key2;
-                            }
-                            if(repeat_def === undefined){
-                                while(true){
-                                    if((alf.includes(`${index}`, 0)) === false){
-                                        if(index < 10){
-                                            string = obj_rule[key][i].slice(0, j) + `${index}` + obj_rule[key][i].slice(j + 1, obj_rule[key][i].length);
-                                        }
-                                        else{
-                                            string = obj_rule[key][i].slice(0, j) + `~${index}~` + obj_rule[key][i].slice(j + 1, obj_rule[key][i].length);
-                                        }
-                                        obj_rule[key][i] = string;
-                                        if(index < 10) obj_rule[`${index}`] = save_term;
-                                        else obj_rule[`~${index}~`] = save_term;
-                                        index += 1;
-                                        j = -1
-                                        break;
-                                    }else{
-                                        index += 1 
-                                    } 
-                                }
-                            }
-                            else{
-                                string = obj_rule[key][i].slice(0, j) + `${repeat_def}` + obj_rule[key][i].slice(j + 1, obj_rule[key][i].length);
-                                obj_rule[key][i] = string;
-                                repeat_def = undefined
-                                j = -1
-                            }
-                            //console.log("После замены", obj_rule[key][i], obj_rule[key][i][j])
-                        }
-                        check_term = true;
-                    }
-                }
-            }
-        }
-    }
-    return [index, alf, alf_NT_old];
-}
-
-
-export function del_epsilon(obj_rule){
-    let del_el = [];
-    let el = [];
-    let flag = true;
-    let flag_2 = true;
-    let flag_3 = true;
-    let flag_4 = true;
-    let string;
-
-    for(let key in obj_rule){
-        if(obj_rule[key] === "") del_el.push(key);
-        else if(typeof(obj_rule[key]) === "object"){
-            flag = false
-            flag_2 = true;
-            for(let i = 0; i < obj_rule[key].length; i++){
-                if(obj_rule[key][i] === "") flag = true;
-                if(obj_rule[key][i] !== key && obj_rule[key][i] !== "") flag_2 = false;
-            }
-            if(flag && flag_2) del_el.push(key);
-        }
-    }
-    flag = true;
-    while(flag){
-        flag_2 = false
-        for(let key in obj_rule){
-            if(typeof(obj_rule[key]) === "string" && obj_rule[key].length === 1){
-                for(let j = 0; j < del_el.length; j++){
-                    if(obj_rule[key] === del_el[j] && key !== "S0"){
-                        for(let k = 0; k < del_el.length; k++){
-                            if(key === del_el[k]) string = false;
-                        }
-                        if(string === undefined){
-                            flag_2 = true;
-                            del_el.push(key);
-                        }
-                        string = undefined
-                    }
-                    else if(obj_rule[key] === del_el[j] && key === "S0") obj_rule[key] = ["S", ""]
-                }
-            }
-            else if(typeof(obj_rule[key]) === "string" && obj_rule[key].length > 1){
-                flag_3 = false;
-                flag_4 = true;
-                for(let i = 0; i < obj_rule[key].length; i++){
-                    for(let j = 0; j < del_el.length; j++){
-                        if(obj_rule[key][i] === del_el[j]) flag_3 = true;
-                    }
-                    if(!flag_3) flag_4 = false;
-                    flag_3 = false
-                }
-                if(flag_4){
-                    for(let k = 0; k < del_el.length; k++){
-                        if(key === del_el[k]) string = false;
-                    }
-                    if(string === undefined){
-                        flag_2 = true;
-                        del_el.push(key);
-                    }
-                    string = undefined
-                }
-            }
-            else if(typeof(obj_rule[key]) === "object"){
-                for(let i = 0; i < obj_rule[key].length; i++){
-                    flag_3 = false
-                    flag_4 = true
-                    for(let j = 0; j < del_el.length; j++){
-                        if(obj_rule[key][i] === del_el[j] && key !== "S0") flag_3 = true;
-
-                        if(obj_rule[key][i] !== key && obj_rule[key][i] !== "" && obj_rule[key][i] !== del_el[j]){
-                            flag_4 = false;
-                            for(let k = 0; k < del_el.length; k++){
-                                if(obj_rule[key][i] === del_el[k]) flag_4 = true;
-                            }
-                            if(flag_4 === false) j = del_el.length;
-                        }
-                    }
-                    if(flag_3 && flag_4){
-                        for(let k = 0; k < del_el.length; k++){
-                            if(key === del_el[k]) string = false;
-                        }
-                        if(string === undefined){
-                            flag_2 = true;
-                            del_el.push(key);
-                        }
-                        string = undefined
-                    }
-                    else if(!flag_4) i = obj_rule[key].length
-                }
-            }
-        }
-        if(!flag_2) flag = false;
-    }
-
-
-    for(let i = 0; i < del_el.length; i++){
-        delete obj_rule[del_el[i]];
-    }
-
-    for(let key in obj_rule){
-        if(typeof(obj_rule[key]) === "string" && obj_rule[key].length > 1){
-            for(let i = 0; i < obj_rule[key].length; i++){
-                for(let j = 0; j < del_el.length; j++){
-                    if(obj_rule[key][i] === del_el[j]){
-                        string = obj_rule[key].slice(0, i) + obj_rule[key].slice(i + 1, obj_rule[key].length);
-                        obj_rule[key] = string;
-                        i -= 1;
-                    }
-                }
-            }
-        }
-        else if(typeof(obj_rule[key]) === "object" && key !== "S0"){
-            for(let i = 0; i < obj_rule[key].length; i++){
-                for(let j = 0; j < obj_rule[key][i].length; j++){
-                    for(let k = 0; k < del_el.length; k++){
-                        if(obj_rule[key][i][j] === del_el[k]){
-                            string = obj_rule[key][i].slice(0, j) + obj_rule[key][i].slice(j + 1, obj_rule[key][i].length);
-                            obj_rule[key][i] = string;
-                            j -= 1;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    del_el.length = 0;
-
-    for(let key in obj_rule){
-        if(typeof(obj_rule[key]) === "object" && key !== "S0"){
-            for(let i = 0; i < obj_rule[key].length; i++){
-                if(obj_rule[key][i] === ""){
-                    del_el.push(key)
-                    obj_rule[key].splice(i, i)
-                    if(key === "S") obj_rule["S0"] = ["S", ""];
-                }
-            }
-        }
-    }
-
-    flag = true;
-    while(flag){
-        flag_2 = false
-        let check = 0;
-        string = undefined
-        for(let key in obj_rule){
-            if(typeof(obj_rule[key]) === "string"){
-                for(let i = 0; i < obj_rule[key].length; i++){
-                    for(let j = 0; j < del_el.length; j++){
-                        if(obj_rule[key][i] === del_el[j]) check += 1;
-                    }
-                }
-                if(check === obj_rule[key].length && key !== "S0"){
-                    for(let k = 0; k < del_el.length; k++){
-                        if(key === del_el[k]) string = false;
-                    }
-                    if(string === undefined){
-                        flag_2 = true;
-                        del_el.push(key);
-                        if(key === "S") obj_rule["S0"] = ["S", ""];
-                    }
-                    string = undefined
-                }
-                check = 0;
-            }
-            else if(typeof(obj_rule[key]) === "object"){
-                for(let i = 0; i < obj_rule[key].length; i++){
-                    for(let j = 0; j < obj_rule[key][i].length; j++){
-                        for(let k = 0; k < del_el.length; k++){
-                            if(obj_rule[key][i][j] === del_el[k]) check += 1;
-                        }
-                    }
-                    if(check === obj_rule[key][i].length && key !== "S0"){
-                        for(let z = 0; z < del_el.length; z++){
-                            if(key === del_el[z]) string = false;
-                        }
-                        if(string === undefined){
-                            flag_2 = true;
-                            del_el.push(key);
-                            if(key === "S") obj_rule["S0"] = ["S", ""];
-                        }
-                        string = undefined
-                    }
-                    check = 0;
-                }
-            }
-        }
-        if(!flag_2) flag = false;
-    }
-
-    for(let key in obj_rule){
-        if(typeof(obj_rule[key]) === "string" && obj_rule[key].length > 1){
-            for(let i = 0; i < obj_rule[key].length; i++){
-                for(let j = 0; j < del_el.length; j++){
-                    if(obj_rule[key][i] === del_el[j] && typeof(obj_rule[key]) === "string"){
-                        string = obj_rule[key].slice(0, i) + obj_rule[key].slice(i + 1, obj_rule[key].length);
-                        if(typeof(obj_rule[key]) === "string") obj_rule[key] = [obj_rule[key]];
-                        //obj_rule[key].push(string);
-                        //j -= 1;
-                    }
-                }
-            }
-
-            if(typeof(obj_rule[key]) === "object" && key !== "S0"){
-                for(let i = 0; i < obj_rule[key].length; i++){
-                    if(obj_rule[key][i].length > 1){
-                        for(let j = 0; j < obj_rule[key][i].length; j++){
-                            for(let k = 0; k < del_el.length; k++){
-                                if(obj_rule[key][i][j] === del_el[k]){
-                                    string = obj_rule[key][i].slice(0, j) + obj_rule[key][i].slice(j + 1, obj_rule[key][i].length);
-                                    obj_rule[key].push(string);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        else if(typeof(obj_rule[key]) === "object" && key !== "S0"){
-            for(let i = 0; i < obj_rule[key].length; i++){
-                if(obj_rule[key][i].length > 1){
-                    for(let j = 0; j < obj_rule[key][i].length; j++){
-                        for(let k = 0; k < del_el.length; k++){
-                            if(obj_rule[key][i][j] === del_el[k]){
-                                string = obj_rule[key][i].slice(0, j) + obj_rule[key][i].slice(j + 1, obj_rule[key][i].length);
-                                obj_rule[key].push(string);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-export function rule_check(arr_rule, res_string, Intermediate_arr){
-    for(let key in arr_rule){
-        if(typeof(arr_rule[key]) === "string" && res_string === arr_rule[key]){
-            Intermediate_arr.push(key);
-        }
-        else{
-            for(let z = 0; z < arr_rule[key].length; z++){
-                if(res_string === arr_rule[key][z]) Intermediate_arr.push(key);
-            }
-        }
-    }
-    return Intermediate_arr;
-}
-
-export function CYK_algorithm(arr_rule, word){
-    let CYK_arr_col = [];
-    let CYK_arr_row = [];
-    let Intermediate_arr = [];
-    let save_i = 0;
-    let save_j = 0;
-    let res_string = 0;
-    if(arr_rule === 0){
-        console.log("Ошибка! грамматика не поддается проверке");
-        return -1;
-    }
-    if(word.length === 0 && arr_rule["S0"].length === 2){
-        //console.log("Данное слово задано верно");
-        return 1;
-    }
-    else if(word.length === 0 && arr_rule["S0"].length === 1){
-        //console.log("Такое слово не может быть задано в данной грамматике");
-        return 0;
-    }
-    else if(word.length !== 0){
-        for(let i = 0; word.length > i; i++){ //строчки
-            for(let j = 0; word.length  > j; j++){ //столбцы
-                if(i === 0){
-                    for(let k = 0; word.length > k; k++){
-                        for(let key in arr_rule){
-                            if(arr_rule[key].length < 2 && word[k] === arr_rule[key]) Intermediate_arr.push(key);
-                            else if(arr_rule[key].length > 1) {
-                                for(let z = 0; z < arr_rule[key].length; z++){
-                                    if(word[k] === arr_rule[key][z]) Intermediate_arr.push(key);
-                                }
-                            }
-                        }
-                        CYK_arr_col[k] = Intermediate_arr.slice(0);
-                        Intermediate_arr.length = 0;
-                    }
-                    CYK_arr_row[i] = CYK_arr_col.slice(0);
-                }
-    
-                else{
-                    save_i = i;
-                    save_j = 1;
-                    while(save_i >= 1){
-                        if(CYK_arr_row[i-save_i] !== undefined && CYK_arr_row[i-save_i][j] !== undefined && CYK_arr_row[i-save_i][j].length !== 0 && CYK_arr_row[i - (i-save_i + 1)] !== undefined && CYK_arr_row[i - (i-save_i + 1)][j + (i-save_i + 1)] !== undefined){
-                            if(typeof(CYK_arr_row[i - (i-save_i + 1)][j + save_j]) === "string"){
-                                if(typeof(CYK_arr_row[i-save_i][j]) === "string"){
-                                    res_string = CYK_arr_row[i-save_i][j] + CYK_arr_row[i - (i-save_i + 1)][j + save_j];
-    
-                                    Intermediate_arr = rule_check(arr_rule, res_string, Intermediate_arr);
-                                    CYK_arr_col[j] = Intermediate_arr.slice(0);
-    
-                                }
-                                else{
-                                    for(let k = 0; k < CYK_arr_row[i-save_i][j].length; k++){
-                                        res_string = CYK_arr_row[i-save_i][j][k] + CYK_arr_row[i - (i-save_i + 1)][j + save_j];
-    
-                                        Intermediate_arr = rule_check(arr_rule, res_string, Intermediate_arr);
-                                        CYK_arr_col[j] = Intermediate_arr.slice(0);
-    
-                                    }
-                                }
-    
-                                save_i -= 1
-                                save_j +=1
-                            } 
-                            else{
-                                for(let k = 0; k < CYK_arr_row[i - (i-save_i + 1)][j + save_j].length; k++){
-                                    if(typeof(CYK_arr_row[i-save_i][j]) === "string"){
-                                        res_string = CYK_arr_row[i-save_i][j] + CYK_arr_row[i - (i-save_i + 1)][j + save_j][k]
-    
-                                        // console.log(i)
-                                        // console.log(CYK_arr_row[i-save_i][j])
-                                        // console.log(CYK_arr_row[i - (i-save_i + 1)][j + save_j])
-                                        // console.log("***********************************************")
-                                        Intermediate_arr = rule_check(arr_rule, res_string, Intermediate_arr);
-                                        CYK_arr_col[j] = Intermediate_arr.slice(0);
-    
-                                    }
-                                    else{
-                                        for(let z = 0; z < CYK_arr_row[i-save_i][j].length; z++){
-                                            res_string = CYK_arr_row[i-save_i][j][z] + CYK_arr_row[i - (i-save_i + 1)][j + save_j][k]
-    
-                                            Intermediate_arr = rule_check(arr_rule, res_string, Intermediate_arr);
-                                            CYK_arr_col[j] = Intermediate_arr.slice(0);
-    
-                                        }
-                                    }
-                                }
-                                save_i -= 1
-                                save_j +=1
-                            }
-                        }
-                        else {
-                            save_i -= 1;
-                            save_j +=1
-                        }
-                    } 
-                    Intermediate_arr.length = 0;
-                    CYK_arr_row[i] = CYK_arr_col.slice(0);
-                }
-            }
-            length = CYK_arr_col.length - 1;
-            if(length >= 0) CYK_arr_col.length = length;
-        }
-        if(typeof(CYK_arr_row[CYK_arr_row.length - 1][0]) === "string"){
-            if(CYK_arr_row[CYK_arr_row.length - 1][0] === "S0" || CYK_arr_row[CYK_arr_row.length - 1][0] === "S"){
-                // console.log("Данное слово задано верно")
-                return 1;
-            }
-            else return 0;//console.log("Такое слово не может быть задано в данной грамматике")
-        }
-        else{
-            for(let i = 0; CYK_arr_row[CYK_arr_row.length - 1][0].length > i; i++){
-                if(CYK_arr_row[CYK_arr_row.length - 1][0][i] ==="S0" || CYK_arr_row[CYK_arr_row.length - 1][0][i] ==="S"){
-                    //console.log("Данное слово задано верно");
-                    return 1;
-                } 
-            }
-            //console.log("Такое слово не может быть задано в данной грамматике");
-            return 0;
-        } 
-    }
-}
-
-export function earley_algorithm(obj_grammar, word){
+export function algorithm_of_earley(obj_grammar, word){
     let Arr = [];
     let num = 0;
     let Arr_2;
@@ -910,16 +137,13 @@ export function earley_algorithm(obj_grammar, word){
 
     Arr_2 = Arr[word.length];
 
-    console.log(Arr)
     if(Arr_2 !== undefined){
         for(let check = 0; check < Arr_2.length; check++){
-            if(Arr_2[check][0] === "Л -> S~"
-                && Arr_2[check][1] === 0){
+            if(Arr_2[check][0] === "Л -> S~" && Arr_2[check][1] === 0){
                 return true
             }
         }
     }
-
     return false
 }
 
@@ -943,7 +167,8 @@ function scan(Arr, i, obj_grammar, word, num){
                 if(Arr_3[0][z] === "~"
                     && Arr_3[0][z + 1] !== undefined
                     && !non_term.includes(Arr_3[0][z + 1])
-                    && Arr_3[0][z + 1] === word[i - 1]){
+                    && Arr_3[0][z + 1] === word[i - 1]
+                ){
                     save = Arr_3[0][z + 1];
                     str = Arr_3[0].slice(0, z) + save + "~" + Arr_3[0].slice(z+2, Arr_3[0].length);
                     if(Arr[i] === undefined){
@@ -974,7 +199,7 @@ function complete(Arr, i){
                         let check_repeat = true
                         if(Arr_3[z][0][w] === "~" && Arr_3[z][0][w+1] === Arr_2[j][0][0]){
                             save = Arr_3[z][0][w + 1];
-                            str = Arr_3[z][0].slice(0, w) + save + "~" + Arr_3[z][0].slice(w+2, Arr_3[z][0].length);
+                            str = Arr_3[z][0].slice(0, w) + save + "~" + Arr_3[z][0].slice(w + 2, Arr_3[z][0].length);
                             for(let check = 0; check < Arr[i].length; check++){
                                 if(Arr[i][check][0] === str && Arr[i][check][1] === Arr_3[z][1]){
                                     check_repeat = false;
@@ -1043,13 +268,17 @@ function predict(Arr, i, obj_grammar){
                                 check_repeat = false;
                             }
                         }
-                        if(check_repeat !== false) check_repeat = true;
+                        if(check_repeat !== false) {
+                            check_repeat = true;
+                        }
                         if(check_repeat) {
                             Arr[i].push([`${Arr_2[j][0][z+1]} -> ~${obj_grammar[Arr_2[j][0][z+1]]}`, i])
                         }
                     }else{
                         for(let o = 0; o < obj_grammar[Arr_2[j][0][z+1]].length; o++){
-                            if(obj_grammar[Arr_2[j][0][z+1]][o] === "") del_eps(Arr, i, Arr_2[j][0][z+1], Arr_2[j][1]);
+                            if(obj_grammar[Arr_2[j][0][z+1]][o] === "") {
+                                del_eps(Arr, i, Arr_2[j][0][z+1], Arr_2[j][1]);
+                            }
                             check_repeat = true;
                             for(let check = 0; check < Arr[i].length; check++){
                                 if(Arr[i][check][0] === `${Arr_2[j][0][z+1]} -> ~${obj_grammar[Arr_2[j][0][z+1]][o]}`
@@ -1057,7 +286,9 @@ function predict(Arr, i, obj_grammar){
                                     check_repeat = false;
                                 }
                             }
-                            if(check_repeat !== false) check_repeat = true;
+                            if(check_repeat !== false) {
+                                check_repeat = true;
+                            }
                             if(check_repeat) {
                                 Arr[i].push([`${Arr_2[j][0][z+1]} -> ~${obj_grammar[Arr_2[j][0][z+1]][o]}`, i])
                             }
@@ -1069,99 +300,7 @@ function predict(Arr, i, obj_grammar){
     }
 }
 
-export function CYK_algorithm2(obj_rule, word){
-    let arr = [];
-
-    if(obj_rule === 0) return 0
-
-    if(word === ""){
-        if(obj_rule["S0"].includes("")) return true;
-        else return false
-    }
-
-    for(let i = 0; i < word.length; i++){
-        for(let key in obj_rule){
-            if(typeof(obj_rule[key]) === "string" && obj_rule[key] === word[i]){
-                arr[[0, i, key]] = true;
-            }
-            else if(typeof(obj_rule[key]) === "object"){
-                for(let j = 0; j < obj_rule[key].length; j++){
-                    if(obj_rule[key][j] === word[i]){
-                        arr[[0, i, key]] = true;
-                    }
-                }
-            }
-        }
-    }
-
-    for(let i = 1; i < word.length; i++){
-        for(let j = 0; j < word.length - i; j++){
-            for(let k = 0; k < i; k++){
-                for(let key in obj_rule){
-                    if(typeof(obj_rule[key]) === "string" && obj_rule[key].length > 1){
-                        let counter = 1;
-                        if(obj_rule[key][0] === "~"){
-                            while(obj_rule[key][counter] !== "~"){
-                                counter += 1;
-                            }
-                            if(arr[[k, j, obj_rule[key].slice(0, counter + 1)]] === true && arr[[i - k - 1, j + k + 1, obj_rule[key].slice(counter + 1, obj_rule[key].length)]] === true){
-                                arr[[i, j, key]] = true
-                            }
-                        } else if(obj_rule[key][1] === "~"){
-                            while(obj_rule[key][counter] !== "~"){
-                                counter += 1;
-                            }
-                            if(arr[[k, j, obj_rule[key][0]]] === true && arr[[i - k - 1, j + k + 1, obj_rule[key].slice(1, obj_rule[key].length)]] === true){
-                                arr[[i, j, key]] = true
-                            }
-                        }
-                        else{
-                            if(arr[[k, j, obj_rule[key][0]]] === true && arr[[i - k - 1, j + k + 1, obj_rule[key][1]]] === true){
-                                arr[[i, j, key]] = true
-                            }
-                        }
-                    }
-                    else if(typeof(obj_rule[key]) === "object"){
-                        for(let z = 0; z < obj_rule[key].length; z++){
-                            if(obj_rule[key][z].length > 1){
-                                let counter = 1;
-                                if(obj_rule[key][z][0] === "~"){
-                                    while(obj_rule[key][z][counter] !== "~"){
-                                        counter += 1;
-                                    }
-                                    if(arr[[k, j, obj_rule[key][z].slice(0, counter + 1)]] === true && arr[[i - k - 1, j + k + 1, obj_rule[key][z].slice(counter + 1, obj_rule[key][z].length)]] === true){
-                                        arr[[i, j, key]] = true
-                                    }
-                                } else if(obj_rule[key][z][1] === "~"){
-                                    while(obj_rule[key][z][counter] !== "~"){
-                                        counter += 1;
-                                    }
-                                    if(arr[[k, j, obj_rule[key][z][0]]] === true && arr[[i - k - 1, j + k + 1, obj_rule[key][z].slice(1, obj_rule[key][z].length)]] === true){
-                                        arr[[i, j, key]] = true
-                                    }
-                                }
-                                else{
-                                    if(arr[[k, j, obj_rule[key][z][0]]] === true && arr[[i - k - 1, j + k + 1, obj_rule[key][z][1]]] === true){
-                                        arr[[i, j, key]] = true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    if(arr[[word.length - 1, 0, "S0"]]){
-        //console.log("Такое слово можно построить");
-        return true;
-    }
-    //console.log("Такое слово построить нельзя")
-    return false;
-}
-
-export function Unambiguous_conversion(obj_rule, max_counter = 2){ //Функция мутирует объект! Ждет объект с правилами в трансформированной форме
+export function unambiguous_conversion(rule, max_counter = 2){ //Функция мутирует объект! Ждет объект с правилами в трансформированной форме
     let flag = true;
     let step = 0;
     let counter = 0;
@@ -1169,13 +308,15 @@ export function Unambiguous_conversion(obj_rule, max_counter = 2){ //Функц�
     let intermediate_rule = {} //Создаем объект с промежуточными правилами
     while(flag){
         if(step === 0){
-            if(!Search_for_uniqueness(obj_rule, Unambiguous_rule)) flag = false;
+            if(!Search_for_uniqueness(rule, Unambiguous_rule)) {
+                flag = false;
+            }
         }
         else {
             if(!Search_for_uniqueness(intermediate_rule, Unambiguous_rule)) flag = false;
         }
 
-        substitution_unambiguous_rules(Unambiguous_rule, intermediate_rule, obj_rule, counter)
+        substitution_unambiguous_rules(Unambiguous_rule, intermediate_rule, rule, counter)
         if(!flag){
             counter += 1;
             if(counter < max_counter) flag = true;
@@ -1201,9 +342,13 @@ function substitution_unambiguous_rules(Unambiguous_rule, intermediate_rule, obj
                     if(obj_rule[key][i] !== key2){
                         flag_2 = true;
                         for(let key3 in obj_rule){
-                            if(obj_rule[key][i] === key3) flag_2 = false;
+                            if(obj_rule[key][i] === key3) {
+                                flag_2 = false;
+                            }
                         }
-                        if(flag_2) flag = true;
+                        if(flag_2) {
+                            flag = true;
+                        }
                     }
                     else flag = true;
                 }
@@ -1222,11 +367,13 @@ function substitution_unambiguous_rules(Unambiguous_rule, intermediate_rule, obj
                         else string = string + obj_rule[key][i];
                     } 
                     else{
-                        if(typeof(Unambiguous_rule[index]) === "object"){
+                        if(typeof Unambiguous_rule[index] === "object"){
                             if(Unambiguous_rule[index][counter] !== undefined){
                                 if(string === undefined) string = Unambiguous_rule[index][counter];
                                 else string = string + Unambiguous_rule[index][counter];
-                            } else if(string !== undefined) string = Unambiguous_rule[index][0];
+                            } else if(string !== undefined) {
+                                string = Unambiguous_rule[index][0];
+                            }
                         }
                         else{
                             if(string === undefined) string = Unambiguous_rule[index];
