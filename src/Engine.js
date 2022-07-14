@@ -2,9 +2,10 @@ import {
     combinationIndexes,
     replaceAllDeterminate,
     includes,
-    unambiguous_conversion,
+    oneToOneTransformation,
+    algorithmOfEarley,
+    correctGrammarCheck
 } from "./library";
-import {algorithm_of_earley, correct_grammar_check} from "./check/check";
 
 class Options{
     constructor() {
@@ -84,11 +85,11 @@ class Options{
 
     setUnambiguous(){
         //UnambiguousTransformedCluster
-        this.rules.UTC = unambiguous_conversion(this.transformer());
+        this.rules.UTC = oneToOneTransformation(this.transformer());
     }
 
     checkGrammar(){
-        const res = correct_grammar_check(this.rules.transformedCluster);
+        const res = correctGrammarCheck(this.rules.transformedCluster);
         if(!res){
             throw new Error("Грамматика составлена некорректно");
         }
@@ -183,7 +184,7 @@ class Engine{
         start(this.options.rules.transformedCluster, this.settings.TREE_DEPTH_LIMIT, this.settings.RESULT_LIMIT, this.settings.STACK_LIMIT, this.settings.DEATH_TIME);
         if(this.settings.PROCESS_STACK && (stack[0].length !== 0 || stack[1].length !== 0)){
             totalDepth.counter = 0;
-            let unambiguous = unambiguous_conversion(this.options.transformer());
+            let unambiguous = oneToOneTransformation(this.options.transformer());
             stack[0] = stack[0].sort((a, b) => a.length > b.length);
             stack[1] = stack[1].sort((a, b) => a.length > b.length);
             start(unambiguous, this.settings.TREE_DEPTH_LIMIT, this.settings.RESULT_LIMIT, this.settings.STACK_LIMIT * 2, this.settings.DEATH_TIME)
@@ -219,7 +220,7 @@ class Engine{
     }
 
     checkWord(word){
-        return algorithm_of_earley(this.options.rules.transformedCluster, word);
+        return algorithmOfEarley(this.options.rules.transformedCluster, word);
     }
 
     static speedtest(callback){
