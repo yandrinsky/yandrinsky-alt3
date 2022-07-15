@@ -13,14 +13,13 @@ export function oneToOneTransformation(rule, counterForMoreVariation = 2){
     let intermediateRule = {}
 
     while(continueWhile){
-
         if(step === 0){
-            if(!SearchForUniqueness(rule, unambiguousRule)) {
+            if(!searchForUniqueness(rule, unambiguousRule)) {
                 continueWhile = false;
             }
         }
         else {
-            if(!SearchForUniqueness(intermediateRule, unambiguousRule)){
+            if(!searchForUniqueness(intermediateRule, unambiguousRule)){
                 continueWhile = false;
             }
         }
@@ -50,23 +49,19 @@ function substitutionUnambiguousRules(unambiguousRule, intermediateRule, rule, c
     let stringForPushInIntermediateRule = undefined;
     let indexOfChange = 0;
 
-    for(let key in rule){
-        if(isString(rule[key])){
-
+    for(let ruleKey in rule){
+        if(isString(rule[ruleKey])){
             foundTerminalSymbol = true;
 
-            for(let i = 0; i < rule[key].length; i++){
-
+            for(let i = 0; i < rule[ruleKey].length; i++){
                 searchTerminalCharacters = false;
 
                 for(let key2 in unambiguousRule){
-
-                    if(rule[key][i] !== key2){
-
+                    if(rule[ruleKey][i] !== key2){
                         searchTerminalCharactersHelper = true;
 
-                        for(let key3 in rule){
-                            if(rule[key][i] === key3) {
+                        for(let ruleKey2 in rule){
+                            if(rule[ruleKey][i] === ruleKey2) {
                                 searchTerminalCharactersHelper = false;
                             }
                         }
@@ -86,19 +81,19 @@ function substitutionUnambiguousRules(unambiguousRule, intermediateRule, rule, c
             }
             if(foundTerminalSymbol){
                 indexOfChange = -1;
-                for(let i = 0; i < rule[key].length; i++){
+                for(let i = 0; i < rule[ruleKey].length; i++){
                     for(let key2 in unambiguousRule){
-                        if(rule[key][i] === key2){
+                        if(rule[ruleKey][i] === key2){
                             indexOfChange = key2;
                         }
                     }
                     if(indexOfChange === -1){
 
                         if(stringForPushInIntermediateRule === undefined){
-                            stringForPushInIntermediateRule = rule[key][i];
+                            stringForPushInIntermediateRule = rule[ruleKey][i];
                         }
                         else{
-                            stringForPushInIntermediateRule = stringForPushInIntermediateRule + rule[key][i];
+                            stringForPushInIntermediateRule = stringForPushInIntermediateRule + rule[ruleKey][i];
                         }
 
                     } 
@@ -107,25 +102,21 @@ function substitutionUnambiguousRules(unambiguousRule, intermediateRule, rule, c
                     }
                     indexOfChange = -1;
                 }
-                stringForPushInIntermediateRule = pushInIntermediateRule(stringForPushInIntermediateRule, intermediateRule, key);
+                stringForPushInIntermediateRule = pushInIntermediateRule(stringForPushInIntermediateRule, intermediateRule, ruleKey);
             }
         }
-        else if(isArray(rule[key])){
-            for(let z = 0; z < rule[key].length; z++){
-
+        else if(isArray(rule[ruleKey])){
+            for(let z = 0; z < rule[ruleKey].length; z++){
                 foundTerminalSymbol = true;
-                for(let i = 0; i < rule[key][z].length; i++){
-
+                for(let i = 0; i < rule[ruleKey][z].length; i++){
                     searchTerminalCharacters = false;
 
-                    for(let key2 in unambiguousRule){
-
-                        if(rule[key][z][i] !== key2){
-
+                    for(let unambiguousRuleKey in unambiguousRule){
+                        if(rule[ruleKey][z][i] !== unambiguousRuleKey){
                             searchTerminalCharactersHelper = true;
 
                             for(let key3 in rule){
-                                if(rule[key][z][i] === key3){
+                                if(rule[ruleKey][z][i] === key3){
                                     searchTerminalCharactersHelper = false;
                                 }
                             }
@@ -148,20 +139,20 @@ function substitutionUnambiguousRules(unambiguousRule, intermediateRule, rule, c
                 }
                 if(foundTerminalSymbol){
                     indexOfChange = -1;
-                    for(let i = 0; i < rule[key][z].length; i++){
+                    for(let i = 0; i < rule[ruleKey][z].length; i++){
                         for(let key2 in unambiguousRule){
                             for(let key2 in unambiguousRule){
-                                if(rule[key][z][i] === key2){
+                                if(rule[ruleKey][z][i] === key2){
                                     indexOfChange = key2;
                                 }
                             }
                         }
                         if(indexOfChange === -1){
                             if(stringForPushInIntermediateRule === undefined){
-                                stringForPushInIntermediateRule = rule[key][z][i];
+                                stringForPushInIntermediateRule = rule[ruleKey][z][i];
                             }
                             else{
-                                stringForPushInIntermediateRule = stringForPushInIntermediateRule + rule[key][z][i];
+                                stringForPushInIntermediateRule = stringForPushInIntermediateRule + rule[ruleKey][z][i];
                             }
                         } 
                         else{
@@ -170,29 +161,29 @@ function substitutionUnambiguousRules(unambiguousRule, intermediateRule, rule, c
                         indexOfChange = -1;
                     }
 
-                    stringForPushInIntermediateRule = pushInIntermediateRule(stringForPushInIntermediateRule, intermediateRule, key);
+                    stringForPushInIntermediateRule = pushInIntermediateRule(stringForPushInIntermediateRule, intermediateRule, ruleKey);
                 }
             }
         }
     }
 }
 
-function pushInIntermediateRule(stringForPushInIntermediateRule, intermediateRule, key){
+function pushInIntermediateRule(stringForPushInIntermediateRule, intermediateRule, ruleKey){
 
     let check = true;
 
     for(let key3 in intermediateRule){
         for(let i = 0; i < intermediateRule[key3].length; i++){
-            if(stringForPushInIntermediateRule === intermediateRule[key3][i] && key === key3){
+            if(stringForPushInIntermediateRule === intermediateRule[key3][i] && ruleKey === key3){
                 check = false;
             }
         }
     }
     if(check && stringForPushInIntermediateRule !== undefined){
-        if(!(key in intermediateRule)){
-            intermediateRule[key] = [];
+        if(!(ruleKey in intermediateRule)){
+            intermediateRule[ruleKey] = [];
         }
-        intermediateRule[key].push(stringForPushInIntermediateRule);
+        intermediateRule[ruleKey].push(stringForPushInIntermediateRule);
     }
     return undefined;
 }
@@ -222,71 +213,73 @@ function makeIntermediateString(unambiguousRule, indexOfChange, counter, stringF
 }
 
 //функция поиска однозначных правил
-function SearchForUniqueness(rule, unambiguousRule){
+function searchForUniqueness(rule, unambiguousRule){
 
     let allElementsIsTerminal;
     let wasNoSuchRule;
     let newElemCheck = 0;
 
     //Пробегаемся по всем правилам
-    for(let key in rule){
+    for(let ruleKey in rule){
         //Если правило - строка
-        if(isString(rule[key])){
+        if(isString(rule[ruleKey])){
             allElementsIsTerminal = true;
             wasNoSuchRule = true;
             //Проверяем каждый элемент строки - является ли он терминалом
-            for(let i = 0; i < rule[key].length; i++){
-                for(let key2 in rule){
-                    if(rule[key][i] === key2){
+            for(let i = 0; i < rule[ruleKey].length; i++){
+                for(let ruleKey2 in rule){
+                    if(rule[ruleKey][i] === ruleKey2){
                         allElementsIsTerminal = false;
                     }
                 }
             }
             //Если все элементы строки терминалы
             if(allElementsIsTerminal){
-                for(let key2 in unambiguousRule){
+                for(let unambiguousRuleKey in unambiguousRule){
                     //Проверяем было ли такое правило ранее
-                    for(let i = 0; i < unambiguousRule[key2].length; i++){
-                        if(rule[key] === unambiguousRule[key2][i] && key === key2){
+                    for(let i = 0; i < unambiguousRule[unambiguousRuleKey].length; i++){
+                        if(rule[ruleKey] === unambiguousRule[unambiguousRuleKey][i] && ruleKey === unambiguousRuleKey){
                             wasNoSuchRule = false;
                         }
                     }
                 }
                 if(wasNoSuchRule){
-                    if(!(key in unambiguousRule)){
-                        unambiguousRule[key] = [];
+                    if(!(ruleKey in unambiguousRule)){
+                        unambiguousRule[ruleKey] = [];
                     }
                     //Если не было, то добавляем новое правило
-                    unambiguousRule[key].push(rule[key]);
+                    unambiguousRule[ruleKey].push(rule[ruleKey]);
                     newElemCheck = 1;
                 }
             }
         }
         //Если правило объект
-        else if(isArray(rule[key])){
-            for(let i = 0; i < rule[key].length; i++){
+        else if(isArray(rule[ruleKey])){
+            for(let i = 0; i < rule[ruleKey].length; i++){
                 allElementsIsTerminal = true;
                 wasNoSuchRule = true;
-                for(let j = 0; j < rule[key][i].length; j++){
-                    for(let key2 in rule){
-                        if(rule[key][i][j] === key2){
+                for(let j = 0; j < rule[ruleKey][i].length; j++){
+                    for(let ruleKey2 in rule){
+                        if(rule[ruleKey][i][j] === ruleKey2){
                             allElementsIsTerminal = false;
                         }
                     }
                 }
                 if(allElementsIsTerminal){
-                    for(let key2 in unambiguousRule){
-                        for(let j = 0; j < unambiguousRule[key2].length; j++){
-                            if(rule[key][i] === unambiguousRule[key2][j] && key === key2){
+                    for(let unambiguousRuleKey in unambiguousRule){
+                        for(let j = 0; j < unambiguousRule[unambiguousRuleKey].length; j++){
+                            if(rule[ruleKey][i] === unambiguousRule[unambiguousRuleKey][j] &&
+                                ruleKey === unambiguousRuleKey)
+                            {
                                 wasNoSuchRule = false;
                             }
                         }
                     }
                     if(wasNoSuchRule){
-                        if(!(key in unambiguousRule)){
-                            unambiguousRule[key] = [];
+                        if(!(ruleKey in unambiguousRule)){
+                            unambiguousRule[ruleKey] = [];
                         }
-                        unambiguousRule[key].push(rule[key][i]);
+                        unambiguousRule[ruleKey].push(rule[ruleKey][i]);
                         newElemCheck = 1;
                     }
                 }

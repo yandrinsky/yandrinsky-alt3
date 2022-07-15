@@ -9,35 +9,39 @@ export function correctGrammarCheck(rules){
     let allNonTerminal = [];
     let fillingNonTerminalArrayCounter = 0;
 
-    for(let key in rules){
-        allNonTerminal[fillingNonTerminalArrayCounter] = key;
+    for(let rulesKey in rules){
+        allNonTerminal[fillingNonTerminalArrayCounter] = rulesKey;
         fillingNonTerminalArrayCounter += 1;
     }
 
     //Пробегаем по всем правилам
-    for(let key in rules){
+    for(let rulesKey in rules){
         //Если тип строка, то пробегаем по всем ее символам и проверяем - есть ли хоть один символ, который не равен
         //ключу. Т.е. проверяем - не переходит ли правило само в себя
-        if(isString(rules[key])){
+        if(isString(rules[rulesKey])){
             correctTransition = true;
-            for(let i = 0; i < rules[key].length; i++){
-                if(rules[key][i] === key) correctTransition = false;
+            for(let i = 0; i < rules[rulesKey].length; i++){
+                if(rules[rulesKey][i] === rulesKey){
+                    correctTransition = false;
+                }
             }
-            if(!correctTransition) return false;
+            if(!correctTransition){
+                return false;
+            }
 
         }
-            //Если тип массив, то проверяем каждый его элемент аналогично проверке выше. Если все элементы прошли проверку,
+        //Если тип массив, то проверяем каждый его элемент аналогично проверке выше. Если все элементы прошли проверку,
         //то идем дальше
         else{
             correctTransition = false;
-            for(let i = 0; i < rules[key].length; i++){
+            for(let i = 0; i < rules[rulesKey].length; i++){
                 let correctTransitionsCounter = 0;
-                for(let j = 0; j < rules[key][i].length; j++){
-                    if(rules[key][i][j] !== key){
+                for(let j = 0; j < rules[rulesKey][i].length; j++){
+                    if(rules[rulesKey][i][j] !== rulesKey){
                         correctTransitionsCounter += 1;
                     }
                 }
-                if(correctTransitionsCounter === rules[key][i].length){
+                if(correctTransitionsCounter === rules[rulesKey][i].length){
                     correctTransition = true;
                 }
             }
@@ -48,27 +52,35 @@ export function correctGrammarCheck(rules){
     }
 
     //Собираем все элементы, где есть переход в нетерминал, для проверки
-    for(let key in rules){
+    for(let rulesKey in rules){
         checkingForMatching = false;
         //Если тип строка(т.е. нетерминал переходит только в одно правило), то пробегаемся по всем символам строки, в
         //которую нетерминал переходит. Если в этой строке есть хоть один нетерминал, то добавляем нетерминал, из которого
         //был произведен этот переход, в массив нетерминалов для проверки
-        if(isString(rules[key])){
-            for(let i = 0; i < rules[key].length; i++){
-                if(allNonTerminal.includes(rules[key][i])) checkingForMatching = true;
+        if(isString(rules[rulesKey])){
+            for(let i = 0; i < rules[rulesKey].length; i++){
+                if(allNonTerminal.includes(rules[rulesKey][i])){
+                    checkingForMatching = true;
+                }
             }
-            if(checkingForMatching) nonTerminalForCheck.push(key);
+            if(checkingForMatching){
+                nonTerminalForCheck.push(rulesKey);
+            }
             checkingForMatching = false;
         }
             //Если тип массив (т.е. нетерминал переходит в несколько правил), то проводим аналогичную проверку, которая была
         //описана выше, для каждого перехода. Если хоть в одном было выявлено совпадение, то добавляем в массив для проверки
         else{
-            for(let i = 0; i < rules[key].length; i++){
-                for(let j = 0; j < rules[key][i].length; j++){
-                    if(allNonTerminal.includes(rules[key][i][j])) checkingForMatching = true;
+            for(let i = 0; i < rules[rulesKey].length; i++){
+                for(let j = 0; j < rules[rulesKey][i].length; j++){
+                    if(allNonTerminal.includes(rules[rulesKey][i][j])){
+                        checkingForMatching = true;
+                    }
                 }
             }
-            if(checkingForMatching) nonTerminalForCheck.push(key);
+            if(checkingForMatching){
+                nonTerminalForCheck.push(rulesKey);
+            }
             checkingForMatching = false;
         }
     }
@@ -102,9 +114,7 @@ export function checkArrayNonTerminalForCheck(nonTerminalForCheck, rules){
                         //массиве запрещенных нетерминалов для перехода, то опасности неправильного перехода нет
                         if(rules[nonTerminalForCheck[i]][j] !== nonTerminalForCheck[w] &&
                             !ProhibitedCharacters.includes(rules[nonTerminalForCheck[i]][j])) {
-
                             dangerOfWrongTransition = false;
-
                         }
                     }
                     //Если опасность неправильного перехода сохранилась и данного нетерминала еще не было в списке
@@ -120,9 +130,7 @@ export function checkArrayNonTerminalForCheck(nonTerminalForCheck, rules){
                         for(let z = 0; z < rules[nonTerminalForCheck[i]][j].length; z++){
                             if(rules[nonTerminalForCheck[i]][j][z] !== nonTerminalForCheck[w] &&
                                 !ProhibitedCharacters.includes(rules[nonTerminalForCheck[i]][j][z])) {
-
                                 dangerOfWrongTransition = false;
-
                             }
                         }
                     }

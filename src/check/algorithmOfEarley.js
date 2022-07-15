@@ -16,12 +16,10 @@ export function algorithmOfEarley(grammar, word){
     allStateTable[0] = [[`${newStateSymbol} -> ${specialCharacter}S`, 0]];
 
     for(let i = 0; i < (word.length + 1); i++){
-
         numberOfStateTable = i;
         scanWordForAddNewStateInCorrectStateTable(allStateTable, numberOfStateTable, grammar, word, specialCharacter);
 
         while(allStateTable[i] !== undefined && saveAllStateTableLength !== allStateTable[i].length){
-
             saveAllStateTableLength = allStateTable[i].length;
             completeState(allStateTable, numberOfStateTable, specialCharacter);
             predictNewState(allStateTable, numberOfStateTable, grammar, specialCharacter);
@@ -36,7 +34,6 @@ export function algorithmOfEarley(grammar, word){
     if(lastStateTable !== undefined){
 
         for(let check = 0; check < lastStateTable.length; check++){
-
             if(lastStateTable[check][stateString] === `${newStateSymbol} -> S${specialCharacter}` &&
                 lastStateTable[check][stateNumber] === 0)
             {
@@ -61,8 +58,8 @@ function scanWordForAddNewStateInCorrectStateTable(allStateTable, numberOfStateT
     let previousStateTable = allStateTable[numberOfStateTable - 1]
 
     //Собираем все нетерминалы
-    for(let key in grammar){
-        allNonTerminal.push(key);
+    for(let grammarKey in grammar){
+        allNonTerminal.push(grammarKey);
     }
 
     //Если номер текущей таблицы состояний ноль, то выходит из функции, т.к. предыдущей таблицы состояний еще не существует
@@ -71,14 +68,11 @@ function scanWordForAddNewStateInCorrectStateTable(allStateTable, numberOfStateT
     }
 
     if(previousStateTable !== undefined){
-
         for(let j = 0; j < previousStateTable.length; j++){
-
             let saveStringForChange;
             let stateStringAndStateNumber = previousStateTable[j];
 
             for(let z = 0; z < stateStringAndStateNumber[0].length; z++){
-
                 //Проверяем состояние из предыдущей таблицы состояния. Если символ из этого состояния является
                 //терминалом и он равен проверяемому символу из слова, то в текущую таблицу состояний новое состояние,
                 //в котором специальный символ перешагнет данный терминал
@@ -96,11 +90,9 @@ function scanWordForAddNewStateInCorrectStateTable(allStateTable, numberOfStateT
                         stateStringAndStateNumber[stateString].slice(z+2, stateStringAndStateNumber[stateString].length));
 
                     if(allStateTable[numberOfStateTable] === undefined){
-
                         allStateTable[numberOfStateTable] = [[newStateString, stateStringAndStateNumber[stateNumber]]]
 
                     } else{
-
                         allStateTable[numberOfStateTable].push([newStateString, stateStringAndStateNumber[stateNumber]]);
 
                     }
@@ -123,17 +115,12 @@ function completeState(allStateTable, numberOfStateTable, specialCharacter){
     let stateNumber = 1;
 
     if(correctStateTable !== undefined){
-
         for(let j = 0; j < correctStateTable.length; j++){
-
             if(correctStateTable[j][stateString][correctStateTable[j][stateString].length-1] === specialCharacter){
-
                 stateTableWithCompletedStateNumber = allStateTable[correctStateTable[j][stateNumber]];
 
                 for(let z = 0; z < stateTableWithCompletedStateNumber.length; z++){
-
                     for(let w = 0; w < stateTableWithCompletedStateNumber[z][stateString].length; w++){
-
                         let checkRepeat = true
 
                         if(stateTableWithCompletedStateNumber[z][stateString][w] === specialCharacter &&
@@ -236,15 +223,13 @@ function predictNewState(allStateTable, numberOfStateTable, grammar, specialChar
     let nonTerm = [];
     let checkRepeat;
 
-    for(let key in grammar){
-        nonTerm.push(key);
+    for(let grammarKey in grammar){
+        nonTerm.push(grammarKey);
     }
 
     if(currentStateTable !== undefined){
-
         for(let j = 0; j < currentStateTable.length; j++){
             for(let z = 0; z < currentStateTable[j][0].length; z++){
-
                 checkRepeat = true;
 
                 if(currentStateTable[j][0][z] !== undefined &&
@@ -252,16 +237,12 @@ function predictNewState(allStateTable, numberOfStateTable, grammar, specialChar
                     currentStateTable[j][0][z+1] !== undefined &&
                     nonTerm.includes(currentStateTable[j][0][z+1]))
                 {
-
                     if(isString(grammar[currentStateTable[j][0][z+1]])){
-
                         if(grammar[currentStateTable[j][0][z+1]] === ""){
                             workWithEpsilonSymbol(allStateTable, numberOfStateTable,
                                 currentStateTable[j][0][z+1], currentStateTable[j][1], specialCharacter);
                         }
-
                         for(let check = 0; check < allStateTable[numberOfStateTable].length; check++){
-
                             if(allStateTable[numberOfStateTable][check][0] ===
                                 `${currentStateTable[j][0][z+1]} -> ${specialCharacter}${grammar[currentStateTable[j][0][z+1]]}`
                                 && allStateTable[numberOfStateTable][check][1] === numberOfStateTable)
@@ -280,13 +261,10 @@ function predictNewState(allStateTable, numberOfStateTable, grammar, specialChar
                                 numberOfStateTable])
                         }
                     }else{
-
                         for(let o = 0; o < grammar[currentStateTable[j][0][z+1]].length; o++){
-
                             if(grammar[currentStateTable[j][0][z+1]][o] === "") {
                                 workWithEpsilonSymbol(allStateTable, numberOfStateTable, currentStateTable[j][0][z+1], currentStateTable[j][1], specialCharacter);
                             }
-
                             checkRepeat = true;
 
                             for(let check = 0; check < allStateTable[numberOfStateTable].length; check++){
@@ -298,11 +276,11 @@ function predictNewState(allStateTable, numberOfStateTable, grammar, specialChar
                                 }
                             }
 
-                            if(checkRepeat !== false) {
+                            if(checkRepeat !== false){
                                 checkRepeat = true;
                             }
 
-                            if(checkRepeat) {
+                            if(checkRepeat){
                                 allStateTable[numberOfStateTable].push([`${currentStateTable[j][0][z+1]} -> ${specialCharacter}${grammar[currentStateTable[j][0][z+1]][o]}`,
                                     numberOfStateTable])
                             }
