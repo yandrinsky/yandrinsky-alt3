@@ -3,7 +3,6 @@ import {isString} from "../helpers/isString";
 
 //Функция мутирует объект! Ждет объект с правилами в трансформированной форме
 export function oneToOneTransformation(rule, counterForMoreVariation = 2){
-
     let continueWhile = true;
     let step = 0;
     let counter = 0;
@@ -17,8 +16,7 @@ export function oneToOneTransformation(rule, counterForMoreVariation = 2){
             if(!searchForUniqueness(rule, singleRule)) {
                 continueWhile = false;
             }
-        }
-        else {
+        } else {
             if(!searchForUniqueness(intermediateRule, singleRule)){
                 continueWhile = false;
             }
@@ -34,15 +32,12 @@ export function oneToOneTransformation(rule, counterForMoreVariation = 2){
         }
 
         step += 1;
-
     }
 
     return singleRule;
-
 }
 
 function ChangeOfSingleRule(singleRule, intermediateRule, rule, counter){
-
     let searchTerminalCharacters;
     let searchTerminalCharactersHelper;
     let foundTerminalSymbol;
@@ -53,14 +48,14 @@ function ChangeOfSingleRule(singleRule, intermediateRule, rule, counter){
         if(isString(rule[ruleKey])){
             foundTerminalSymbol = true;
 
-            for(let i = 0; i < rule[ruleKey].length; i++){
+            for (let i = 0; i < rule[ruleKey].length; i++) {
                 searchTerminalCharacters = false;
 
-                for(let singleRuleKey in singleRule){
+                for (let singleRuleKey in singleRule) {
                     if(rule[ruleKey][i] !== singleRuleKey){
                         searchTerminalCharactersHelper = true;
 
-                        for(let ruleKey2 in rule){
+                        for (let ruleKey2 in rule) {
                             if(rule[ruleKey][i] === ruleKey2) {
                                 searchTerminalCharactersHelper = false;
                             }
@@ -69,8 +64,7 @@ function ChangeOfSingleRule(singleRule, intermediateRule, rule, counter){
                         if(searchTerminalCharactersHelper) {
                             searchTerminalCharacters = true;
                         }
-                    }
-                    else{
+                    } else {
                         searchTerminalCharacters = true;
                     }
                 }
@@ -79,6 +73,7 @@ function ChangeOfSingleRule(singleRule, intermediateRule, rule, counter){
                     foundTerminalSymbol = false
                 }
             }
+
             if(foundTerminalSymbol){
                 indexOfChange = -1;
                 for(let i = 0; i < rule[ruleKey].length; i++){
@@ -87,25 +82,27 @@ function ChangeOfSingleRule(singleRule, intermediateRule, rule, counter){
                             indexOfChange = singleRuleKey;
                         }
                     }
-                    if(indexOfChange === -1){
 
+                    if(indexOfChange === -1){
                         if(stringForPushInIntermediateRule === undefined){
                             stringForPushInIntermediateRule = rule[ruleKey][i];
-                        }
-                        else{
+                        } else {
                             stringForPushInIntermediateRule = stringForPushInIntermediateRule + rule[ruleKey][i];
                         }
-
-                    } 
-                    else{
-                        stringForPushInIntermediateRule = makeIntermediateString(singleRule, indexOfChange, counter, stringForPushInIntermediateRule);
+                    } else {
+                        stringForPushInIntermediateRule = makeIntermediateString(
+                            singleRule,
+                            indexOfChange,
+                            counter,
+                            stringForPushInIntermediateRule
+                        );
                     }
+
                     indexOfChange = -1;
                 }
                 stringForPushInIntermediateRule = pushInIntermediateRule(stringForPushInIntermediateRule, intermediateRule, ruleKey);
             }
-        }
-        else if(isArray(rule[ruleKey])){
+        } else if (isArray(rule[ruleKey])) {
             for(let z = 0; z < rule[ruleKey].length; z++){
                 foundTerminalSymbol = true;
                 for(let i = 0; i < rule[ruleKey][z].length; i++){
@@ -125,19 +122,17 @@ function ChangeOfSingleRule(singleRule, intermediateRule, rule, counter){
                                 searchTerminalCharacters = true;
                             }
 
-                        }
-                        else{
+                        } else {
                             searchTerminalCharacters = true;
                         }
-
                     }
 
                     if(!searchTerminalCharacters && singleRule.length > 0){
                         foundTerminalSymbol = false
                     }
-
                 }
-                if(foundTerminalSymbol){
+
+                if (foundTerminalSymbol) {
                     indexOfChange = -1;
                     for(let i = 0; i < rule[ruleKey][z].length; i++){
                         for(let singleRuleKey in singleRule){
@@ -148,15 +143,19 @@ function ChangeOfSingleRule(singleRule, intermediateRule, rule, counter){
                             }
                         }
                         if(indexOfChange === -1){
-                            if(stringForPushInIntermediateRule === undefined){
+                            if (stringForPushInIntermediateRule === undefined) {
                                 stringForPushInIntermediateRule = rule[ruleKey][z][i];
-                            }
-                            else{
+                            } else {
                                 stringForPushInIntermediateRule = stringForPushInIntermediateRule + rule[ruleKey][z][i];
                             }
                         } 
                         else{
-                            stringForPushInIntermediateRule = makeIntermediateString(singleRule, indexOfChange, counter, stringForPushInIntermediateRule);
+                            stringForPushInIntermediateRule = makeIntermediateString(
+                                singleRule,
+                                indexOfChange,
+                                counter,
+                                stringForPushInIntermediateRule
+                            );
                         }
                         indexOfChange = -1;
                     }
@@ -169,7 +168,6 @@ function ChangeOfSingleRule(singleRule, intermediateRule, rule, counter){
 }
 
 function pushInIntermediateRule(stringForPushInIntermediateRule, intermediateRule, ruleKey){
-
     let check = true;
 
     for(let intermediateRuleKey in intermediateRule){
@@ -181,32 +179,32 @@ function pushInIntermediateRule(stringForPushInIntermediateRule, intermediateRul
             }
         }
     }
+
     if(check && stringForPushInIntermediateRule !== undefined){
         if(!(ruleKey in intermediateRule)){
             intermediateRule[ruleKey] = [];
         }
         intermediateRule[ruleKey].push(stringForPushInIntermediateRule);
     }
+
     return undefined;
 }
 
 function makeIntermediateString(singleRule, indexOfChange, counter, stringForPushInIntermediateRule){
-
-    if(isArray(singleRule[indexOfChange])){
-        if(singleRule[indexOfChange][counter] !== undefined){
-            if(stringForPushInIntermediateRule === undefined){
+    if (isArray(singleRule[indexOfChange])) {
+        if (singleRule[indexOfChange][counter] !== undefined) {
+            if (stringForPushInIntermediateRule === undefined) {
                 stringForPushInIntermediateRule = singleRule[indexOfChange][counter];
+            } else {
+                stringForPushInIntermediateRule = stringForPushInIntermediateRule + singleRule[indexOfChange][counter];
             }
-            else stringForPushInIntermediateRule = stringForPushInIntermediateRule + singleRule[indexOfChange][counter];
-        } else if(stringForPushInIntermediateRule !== undefined) {
+        } else if (stringForPushInIntermediateRule !== undefined) {
             stringForPushInIntermediateRule = singleRule[indexOfChange][0];
         }
-    }
-    else{
-        if(stringForPushInIntermediateRule === undefined){
+    } else {
+        if (stringForPushInIntermediateRule === undefined) {
             stringForPushInIntermediateRule = singleRule[indexOfChange];
-        }
-        else{
+        } else {
             stringForPushInIntermediateRule = stringForPushInIntermediateRule + singleRule[indexOfChange];
         }
     }
@@ -216,13 +214,12 @@ function makeIntermediateString(singleRule, indexOfChange, counter, stringForPus
 
 //функция поиска однозначных правил
 function searchForUniqueness(rule, singleRule){
-
     let allElementsIsTerminal;
     let wasNoSuchRule;
     let newElemCheck = 0;
 
     //Пробегаемся по всем правилам
-    for(let ruleKey in rule){
+    for (let ruleKey in rule){
         //Если правило - строка
         if(isString(rule[ruleKey])){
             allElementsIsTerminal = true;
@@ -235,6 +232,7 @@ function searchForUniqueness(rule, singleRule){
                     }
                 }
             }
+
             //Если все элементы строки терминалы
             if(allElementsIsTerminal){
                 for(let singleRuleKey in singleRule){
@@ -245,10 +243,11 @@ function searchForUniqueness(rule, singleRule){
                         }
                     }
                 }
-                if(wasNoSuchRule){
-                    if(!(ruleKey in singleRule)){
+                if (wasNoSuchRule) {
+                    if (!(ruleKey in singleRule)) {
                         singleRule[ruleKey] = [];
                     }
+
                     //Если не было, то добавляем новое правило
                     singleRule[ruleKey].push(rule[ruleKey]);
                     newElemCheck = 1;
@@ -288,5 +287,6 @@ function searchForUniqueness(rule, singleRule){
             }
         }
     }
+
     return newElemCheck;
 }

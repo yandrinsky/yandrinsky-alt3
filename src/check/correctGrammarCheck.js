@@ -2,7 +2,6 @@ import {isString} from "../helpers/isString";
 
 //Принимает в себя правила в виде единого объекта и проверяет правила на корректность ввода. Объект не мутируется
 export function correctGrammarCheck(rules){
-
     let correctTransition = true;
     let checkingForMatching = true;
     let nonTerminalForCheck = [];
@@ -41,7 +40,7 @@ export function correctGrammarCheck(rules){
                         correctTransitionsCounter += 1;
                     }
                 }
-                if(correctTransitionsCounter === rules[rulesKey][i].length){
+                if (correctTransitionsCounter === rules[rulesKey][i].length) {
                     correctTransition = true;
                 }
             }
@@ -86,14 +85,12 @@ export function correctGrammarCheck(rules){
     }
 
     return checkArrayNonTerminalForCheck(nonTerminalForCheck, rules)
-
 }
 
 //В данной функции мы проверяем отобранные нетерминальные для проверки символы
 export function checkArrayNonTerminalForCheck(nonTerminalForCheck, rules){
-
     let correctTransition;
-    let ProhibitedCharacters = [];
+    let prohibitedCharacters = [];
     let continueWhile;
     let dangerOfWrongTransition;
 
@@ -103,7 +100,7 @@ export function checkArrayNonTerminalForCheck(nonTerminalForCheck, rules){
         //не может переходить
         while(continueWhile){
             dangerOfWrongTransition = true
-            let saveProhibitedCharactersLength = ProhibitedCharacters.length;
+            let saveProhibitedCharactersLength = prohibitedCharacters.length;
             //Начинаем перебор всех нетерминалов для проверки
             for(let i = 0; i < nonTerminalForCheck.length; i++){
                 //Если тип строка
@@ -113,29 +110,28 @@ export function checkArrayNonTerminalForCheck(nonTerminalForCheck, rules){
                         //Если j-ый символ правила не равен проверяемому нетерминалу и при этом он уже не находился в
                         //массиве запрещенных нетерминалов для перехода, то опасности неправильного перехода нет
                         if(rules[nonTerminalForCheck[i]][j] !== nonTerminalForCheck[w] &&
-                            !ProhibitedCharacters.includes(rules[nonTerminalForCheck[i]][j])) {
+                            !prohibitedCharacters.includes(rules[nonTerminalForCheck[i]][j])) {
                             dangerOfWrongTransition = false;
                         }
                     }
                     //Если опасность неправильного перехода сохранилась и данного нетерминала еще не было в списке
                     //запрещенных, то добавляем его в этот список
-                    if(dangerOfWrongTransition && !ProhibitedCharacters.includes(nonTerminalForCheck[i])){
-                        ProhibitedCharacters.push(nonTerminalForCheck[i]);
+                    if(dangerOfWrongTransition && !prohibitedCharacters.includes(nonTerminalForCheck[i])){
+                        prohibitedCharacters.push(nonTerminalForCheck[i]);
                     }
                     dangerOfWrongTransition = true
-                }
-                else{
+                }  else {
                     //Аналогично поступаем, если тип массив, только теперь проверяем каждый переход
                     for(let j = 0; j < rules[nonTerminalForCheck[i]].length; j++){
                         for(let z = 0; z < rules[nonTerminalForCheck[i]][j].length; z++){
                             if(rules[nonTerminalForCheck[i]][j][z] !== nonTerminalForCheck[w] &&
-                                !ProhibitedCharacters.includes(rules[nonTerminalForCheck[i]][j][z])) {
+                                !prohibitedCharacters.includes(rules[nonTerminalForCheck[i]][j][z])) {
                                 dangerOfWrongTransition = false;
                             }
                         }
                     }
-                    if(dangerOfWrongTransition && !ProhibitedCharacters.includes(nonTerminalForCheck[i])){
-                        ProhibitedCharacters.push(nonTerminalForCheck[i]);
+                    if(dangerOfWrongTransition && !prohibitedCharacters.includes(nonTerminalForCheck[i])){
+                        prohibitedCharacters.push(nonTerminalForCheck[i]);
                     }
                     dangerOfWrongTransition = true;
                 }
@@ -143,7 +139,7 @@ export function checkArrayNonTerminalForCheck(nonTerminalForCheck, rules){
             //Если длинна массива запрещенных символов не изменилась, то останавливаем цикл. Если цикл стал бесконечным
             //по какой-то причине, хотя этого случится никогда не должно. То он остановится, когда длинна массива
             //станет больше 20
-            if(saveProhibitedCharactersLength === ProhibitedCharacters.length || ProhibitedCharacters.length > 20){
+            if(saveProhibitedCharactersLength === prohibitedCharacters.length || prohibitedCharacters.length > 20){
                 continueWhile = false;
             }
         }
@@ -151,7 +147,7 @@ export function checkArrayNonTerminalForCheck(nonTerminalForCheck, rules){
         //вернем false
         if(isString(rules[nonTerminalForCheck[w]])){
             for(let i = 0; i < rules[nonTerminalForCheck[w]].length; i++){
-                if(ProhibitedCharacters.includes(rules[nonTerminalForCheck[w]][i])){
+                if(prohibitedCharacters.includes(rules[nonTerminalForCheck[w]][i])){
                     return false
                 }
             }
@@ -161,20 +157,23 @@ export function checkArrayNonTerminalForCheck(nonTerminalForCheck, rules){
             let flagForCheckAllProhibitedCharacters = true;
             for(let i = 0; i < rules[nonTerminalForCheck[w]].length; i++){
                 for(let j = 0; j < rules[nonTerminalForCheck[w]][i].length; j++){
-                    if(ProhibitedCharacters.includes(rules[nonTerminalForCheck[w]][i][j])){
+                    if(prohibitedCharacters.includes(rules[nonTerminalForCheck[w]][i][j])){
                         flagForCheckAllProhibitedCharacters = false;
                     }
                 }
+
                 if(flagForCheckAllProhibitedCharacters){
                     correctTransition = true;
                 }
+
                 flagForCheckAllProhibitedCharacters = true;
             }
+
             if(!correctTransition){
                 return false;
             }
         }
-        ProhibitedCharacters.length = 0;
+        prohibitedCharacters.length = 0;
     }
 
     return true;

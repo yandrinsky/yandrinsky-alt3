@@ -2,7 +2,6 @@ import {isString} from "../helpers/isString";
 
 //Функция принимает в себя грамматику и слово. Сообщает - принадлежит ли данное слово к грамматике. Не мутирует входные данные
 export function algorithmOfEarley(grammar, word){
-
     let allStateTable = [];
     let lastStateTable;
     let specialCharacter = "~";
@@ -23,7 +22,6 @@ export function algorithmOfEarley(grammar, word){
             saveAllStateTableLength = allStateTable[i].length;
             completeState(allStateTable, numberOfStateTable, specialCharacter);
             predictNewState(allStateTable, numberOfStateTable, grammar, specialCharacter);
-
         }
 
     }
@@ -32,16 +30,13 @@ export function algorithmOfEarley(grammar, word){
     lastStateTable = allStateTable[word.length];
 
     if(lastStateTable !== undefined){
-
         for(let check = 0; check < lastStateTable.length; check++){
             if(lastStateTable[check][stateString] === `${newStateSymbol} -> S${specialCharacter}` &&
                 lastStateTable[check][stateNumber] === 0)
             {
                 return true
             }
-
         }
-
     }
 
     return false
@@ -50,7 +45,6 @@ export function algorithmOfEarley(grammar, word){
 //Данная функция сканирует слово и предыдущую таблицу состояний, чтобы добавить в текущую таблицу состояний новые состояния.
 //Если это возможно
 function scanWordForAddNewStateInCorrectStateTable(allStateTable, numberOfStateTable, grammar, word, specialCharacter){
-
     let allNonTerminal = [];
     let newStateString;
     let stateString = 0;
@@ -89,12 +83,10 @@ function scanWordForAddNewStateInCorrectStateTable(allStateTable, numberOfStateT
                         specialCharacter +
                         stateStringAndStateNumber[stateString].slice(z+2, stateStringAndStateNumber[stateString].length));
 
-                    if(allStateTable[numberOfStateTable] === undefined){
+                    if (allStateTable[numberOfStateTable] === undefined) {
                         allStateTable[numberOfStateTable] = [[newStateString, stateStringAndStateNumber[stateNumber]]]
-
-                    } else{
+                    } else {
                         allStateTable[numberOfStateTable].push([newStateString, stateStringAndStateNumber[stateNumber]]);
-
                     }
                 }
             }
@@ -106,7 +98,6 @@ function scanWordForAddNewStateInCorrectStateTable(allStateTable, numberOfStateT
 //все остальные символы и находится в конце состояния. Мы смотрим номер этого состояния и возвращаемся в таблицу состояний
 //с данным номером и перемещаем там специальный символ в других состояниях, если это возможно
 function completeState(allStateTable, numberOfStateTable, specialCharacter){
-
     let correctStateTable = allStateTable[numberOfStateTable];
     let stateTableWithCompletedStateNumber;
     let newStateString;
@@ -126,40 +117,33 @@ function completeState(allStateTable, numberOfStateTable, specialCharacter){
                         if(stateTableWithCompletedStateNumber[z][stateString][w] === specialCharacter &&
                             stateTableWithCompletedStateNumber[z][stateString][w+1] === correctStateTable[j][stateString][0])
                         {
-
                             saveStringForChange = stateTableWithCompletedStateNumber[z][stateString][w + 1];
 
                             newStateString = (stateTableWithCompletedStateNumber[z][stateString].slice(0, w) +
-
-                                saveStringForChange + specialCharacter +
-
-                                stateTableWithCompletedStateNumber[z][stateString].slice(w + 2,
-                                    stateTableWithCompletedStateNumber[z][stateString].length));
+                                saveStringForChange +
+                                specialCharacter +
+                                stateTableWithCompletedStateNumber[z][stateString]
+                                    .slice(w + 2, stateTableWithCompletedStateNumber[z][stateString].length));
 
                             for(let check = 0; check < allStateTable[numberOfStateTable].length; check++){
-
                                 if(allStateTable[numberOfStateTable][check][stateString] === newStateString &&
                                     allStateTable[numberOfStateTable][check][stateNumber] ===
-                                    stateTableWithCompletedStateNumber[z][stateNumber]
-                                ){
+                                    stateTableWithCompletedStateNumber[z][stateNumber])
+                                {
                                     checkRepeat = false;
                                 }
-
                             }
+
                             if(checkRepeat) {
-
                                 if(numberOfStateTable === correctStateTable[j][stateNumber]){
-
-                                    allStateTable[numberOfStateTable][z] = [newStateString,
-                                        stateTableWithCompletedStateNumber[z][stateNumber]]
-
-                                } else{
-
+                                    allStateTable[numberOfStateTable][z] = [
+                                        newStateString,
+                                        stateTableWithCompletedStateNumber[z][stateNumber]
+                                    ]
+                                } else {
                                     allStateTable[numberOfStateTable].push([newStateString,
                                         stateTableWithCompletedStateNumber[z][stateNumber]]);
-
                                 }
-
                             }
                         }
                     }
@@ -171,9 +155,13 @@ function completeState(allStateTable, numberOfStateTable, specialCharacter){
 
 //Функция добавляет новые состояния, в них специальный символ перешагивает нетерминалы, который могут перейти
 //в пустой символ
-function workWithEpsilonSymbol(allStateTable, numberOfStateTable, StateWithEpsilonTransition,
-                               numberOfStateWithEpsilonTransition, specialCharacter){
-
+function workWithEpsilonSymbol(
+    allStateTable,
+    numberOfStateTable,
+    StateWithEpsilonTransition,
+    numberOfStateWithEpsilonTransition,
+    specialCharacter
+){
     let currentStateTable = allStateTable[numberOfStateTable];
     let saveNewStateString;
     let checkRepeat;
@@ -181,30 +169,28 @@ function workWithEpsilonSymbol(allStateTable, numberOfStateTable, StateWithEpsil
     let stateNumber = 1;
 
     for(let j = 0; j < currentStateTable.length; j++){
-
         for(let z = 0; z < currentStateTable[j][stateString].length; z++){
-
             checkRepeat = true;
 
             if(currentStateTable[j][stateString][z] === specialCharacter &&
                 currentStateTable[j][stateString][z + 1] === StateWithEpsilonTransition)
             {
-                saveNewStateString = (currentStateTable[j][stateString].slice(0, z) +
+                saveNewStateString = (
+                    currentStateTable[j][stateString].slice(0, z) +
                     StateWithEpsilonTransition +
                     specialCharacter +
-                    currentStateTable[j][stateString].slice(z+2, currentStateTable[j][stateString].length));
+                    currentStateTable[j][stateString].slice(z+2, currentStateTable[j][stateString].length)
+                );
 
                 for(let check = 0; check < allStateTable[numberOfStateTable].length; check++){
-
-                    if(allStateTable[numberOfStateTable][check][stateString] === saveNewStateString &&
+                    if (allStateTable[numberOfStateTable][check][stateString] === saveNewStateString &&
                         allStateTable[numberOfStateTable][check][stateNumber] === numberOfStateWithEpsilonTransition)
                     {
                         checkRepeat = false;
                     }
-
                 }
 
-                if(checkRepeat){
+                if (checkRepeat) {
                     allStateTable[numberOfStateTable].push([saveNewStateString, numberOfStateWithEpsilonTransition])
                 }
 
@@ -218,7 +204,6 @@ function workWithEpsilonSymbol(allStateTable, numberOfStateTable, StateWithEpsil
 
 //Функция предсказывает и добавляет новые состояния в таблицу состояний
 function predictNewState(allStateTable, numberOfStateTable, grammar, specialCharacter){
-
     let currentStateTable = allStateTable[numberOfStateTable];
     let nonTerm = [];
     let checkRepeat;
@@ -232,16 +217,22 @@ function predictNewState(allStateTable, numberOfStateTable, grammar, specialChar
             for(let z = 0; z < currentStateTable[j][0].length; z++){
                 checkRepeat = true;
 
-                if(currentStateTable[j][0][z] !== undefined &&
+                if (currentStateTable[j][0][z] !== undefined &&
                     currentStateTable[j][0][z] === specialCharacter &&
                     currentStateTable[j][0][z+1] !== undefined &&
                     nonTerm.includes(currentStateTable[j][0][z+1]))
                 {
                     if(isString(grammar[currentStateTable[j][0][z+1]])){
                         if(grammar[currentStateTable[j][0][z+1]] === ""){
-                            workWithEpsilonSymbol(allStateTable, numberOfStateTable,
-                                currentStateTable[j][0][z+1], currentStateTable[j][1], specialCharacter);
+                            workWithEpsilonSymbol(
+                                allStateTable,
+                                numberOfStateTable,
+                                currentStateTable[j][0][z+1],
+                                currentStateTable[j][1],
+                                specialCharacter
+                            );
                         }
+
                         for(let check = 0; check < allStateTable[numberOfStateTable].length; check++){
                             if(allStateTable[numberOfStateTable][check][0] ===
                                 `${currentStateTable[j][0][z+1]} -> ${specialCharacter}${grammar[currentStateTable[j][0][z+1]]}`
@@ -257,10 +248,14 @@ function predictNewState(allStateTable, numberOfStateTable, grammar, specialChar
                         }
 
                         if(checkRepeat) {
-                            allStateTable[numberOfStateTable].push([`${currentStateTable[j][0][z+1]} -> ${specialCharacter}${grammar[currentStateTable[j][0][z+1]]}`,
-                                numberOfStateTable])
+                            allStateTable[numberOfStateTable].push(
+                                [
+                                    `${currentStateTable[j][0][z+1]} -> ${specialCharacter}${grammar[currentStateTable[j][0][z+1]]}`,
+                                    numberOfStateTable
+                                ]
+                            )
                         }
-                    }else{
+                    } else {
                         for(let o = 0; o < grammar[currentStateTable[j][0][z+1]].length; o++){
                             if(grammar[currentStateTable[j][0][z+1]][o] === "") {
                                 workWithEpsilonSymbol(allStateTable, numberOfStateTable, currentStateTable[j][0][z+1], currentStateTable[j][1], specialCharacter);
@@ -281,10 +276,13 @@ function predictNewState(allStateTable, numberOfStateTable, grammar, specialChar
                             }
 
                             if(checkRepeat){
-                                allStateTable[numberOfStateTable].push([`${currentStateTable[j][0][z+1]} -> ${specialCharacter}${grammar[currentStateTable[j][0][z+1]][o]}`,
-                                    numberOfStateTable])
+                                allStateTable[numberOfStateTable].push(
+                                    [
+                                        `${currentStateTable[j][0][z+1]} -> ${specialCharacter}${grammar[currentStateTable[j][0][z+1]][o]}`,
+                                        numberOfStateTable
+                                    ]
+                                )
                             }
-
                         }
                     }
                 }
