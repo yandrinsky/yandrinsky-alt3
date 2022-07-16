@@ -55,8 +55,8 @@ function ChangeOfSingleRule(singleRule, intermediateRule, rule, counter){
                     if(rule[ruleKey][i] !== singleRuleKey){
                         searchTerminalCharactersHelper = true;
 
-                        for (let ruleKey2 in rule) {
-                            if(rule[ruleKey][i] === ruleKey2) {
+                        for (let ruleKeyForHelpSearch in rule) {
+                            if(rule[ruleKey][i] === ruleKeyForHelpSearch) {
                                 searchTerminalCharactersHelper = false;
                             }
                         }
@@ -112,8 +112,8 @@ function ChangeOfSingleRule(singleRule, intermediateRule, rule, counter){
                         if(rule[ruleKey][z][i] !== singleRuleKey){
                             searchTerminalCharactersHelper = true;
 
-                            for(let ruleKey3 in rule){
-                                if(rule[ruleKey][z][i] === ruleKey3){
+                            for(let ruleKeyForHelpSearch in rule){
+                                if(rule[ruleKey][z][i] === ruleKeyForHelpSearch){
                                     searchTerminalCharactersHelper = false;
                                 }
                             }
@@ -226,8 +226,8 @@ function searchForUniqueness(rule, singleRule){
             wasNoSuchRule = true;
             //Проверяем каждый элемент строки - является ли он терминалом
             for(let i = 0; i < rule[ruleKey].length; i++){
-                for(let ruleKey2 in rule){
-                    if(rule[ruleKey][i] === ruleKey2){
+                for(let ruleKeyForCheckTerminal in rule){
+                    if(rule[ruleKey][i] === ruleKeyForCheckTerminal){
                         allElementsIsTerminal = false;
                     }
                 }
@@ -260,8 +260,8 @@ function searchForUniqueness(rule, singleRule){
                 allElementsIsTerminal = true;
                 wasNoSuchRule = true;
                 for(let j = 0; j < rule[ruleKey][i].length; j++){
-                    for(let ruleKey2 in rule){
-                        if(rule[ruleKey][i][j] === ruleKey2){
+                    for(let ruleKeyForCheckTerminal in rule){
+                        if(rule[ruleKey][i][j] === ruleKeyForCheckTerminal){
                             allElementsIsTerminal = false;
                         }
                     }
