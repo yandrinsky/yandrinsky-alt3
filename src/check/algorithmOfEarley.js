@@ -271,10 +271,6 @@ function predictNewState(allStateTable, numberOfStateTable, grammar, specialChar
                                 }
                             }
 
-                            if(checkRepeat !== false){
-                                checkRepeat = true;
-                            }
-
                             if(checkRepeat){
                                 allStateTable[numberOfStateTable].push(
                                     [
