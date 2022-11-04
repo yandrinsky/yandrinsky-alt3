@@ -13,6 +13,7 @@ export const styles = `<style>
             font-family: Calibri;
             margin-top: 10px;
         }
+        
         .term_input{
             width: 25px;
             height: 25px;
@@ -69,4 +70,4 @@ export const styles = `<style>
             margin-left: 10px;
             cursor: pointer;
         }
-    </style>`
+    </style>`;
