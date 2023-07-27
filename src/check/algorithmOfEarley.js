@@ -19,10 +19,14 @@ export function algorithmOfEarley(grammar, word){
         scanWordForAddNewStateInCorrectStateTable(allStateTable, numberOfStateTable, grammar, word, specialCharacter);
 
         while(allStateTable[i] !== undefined && saveAllStateTableLength !== allStateTable[i].length){
-            saveAllStateTableLength = allStateTable[i].length;
+
+            saveAllStateTableLength = allStateTable[i].length
             completeState(allStateTable, numberOfStateTable, specialCharacter);
             predictNewState(allStateTable, numberOfStateTable, grammar, specialCharacter);
+
         }
+
+        saveAllStateTableLength = -1
 
     }
 
@@ -38,6 +42,8 @@ export function algorithmOfEarley(grammar, word){
             }
         }
     }
+
+
 
     return false
 }
